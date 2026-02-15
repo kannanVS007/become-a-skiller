@@ -45,7 +45,7 @@ const DashboardPreview = () => {
             />
 
             <div className="max-w-7xl mx-auto relative z-10">
-                <div className="grid lg:grid-cols-2 gap-24 items-center">
+                <div className="grid lg:grid-cols-2 gap-12 md:gap-24 items-center">
                     {/* Content Section */}
                     <motion.div
                         initial={{ opacity: 0, x: -60 }}
@@ -58,7 +58,7 @@ const DashboardPreview = () => {
                             <span className="text-[10px] font-black text-primary-400 uppercase tracking-widest">Live Integration</span>
                         </div>
 
-                        <h2 className="text-5xl md:text-7xl font-black text-white mb-8 tracking-tighter leading-none">
+                        <h2 className="text-4xl sm:text-6xl md:text-7xl font-black text-white mb-8 tracking-tighter leading-none">
                             High-Fidelity <br />
                             <span className="text-gradient">Control Center</span>
                         </h2>
@@ -137,14 +137,14 @@ const DashboardPreview = () => {
                                     key="snippet-growth"
                                     animate={{ y: [0, -20, 0] }}
                                     transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-                                    className="absolute -top-12 -right-12 p-6 rounded-[32px] bg-white/10 backdrop-blur-3xl border border-white/20 shadow-premium z-20 flex items-center gap-4 group hover:scale-110 transition-transform"
+                                    className="absolute -top-6 sm:-top-12 -right-0 sm:-right-2 p-4 sm:p-6 rounded-[24px] sm:rounded-[32px] bg-white/10 backdrop-blur-3xl border border-white/20 shadow-premium z-20 flex items-center gap-3 sm:gap-4 group hover:scale-110 transition-transform"
                                 >
-                                    <div className="w-14 h-14 bg-gradient-primary rounded-2xl flex items-center justify-center shadow-glow-premium">
-                                        <FiTrendingUp className="text-white w-7 h-7" />
+                                    <div className="w-10 h-10 sm:w-14 sm:h-14 bg-gradient-primary rounded-xl sm:rounded-2xl flex items-center justify-center shadow-glow-premium">
+                                        <FiTrendingUp className="text-white w-5 h-5 sm:w-7 sm:h-7" />
                                     </div>
                                     <div>
-                                        <p className="text-[10px] font-black text-primary-400 uppercase tracking-widest mb-1">Growth</p>
-                                        <p className="text-2xl font-black text-white">+124.5%</p>
+                                        <p className="text-[8px] sm:text-[10px] font-black text-primary-400 uppercase tracking-widest mb-1">Growth</p>
+                                        <p className="text-lg sm:text-2xl font-black text-white">+124.5%</p>
                                     </div>
                                 </motion.div>
 

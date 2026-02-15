@@ -24,7 +24,6 @@ const Navbar = () => {
         { name: 'Courses', path: '/courses' },
         { name: 'Blog', path: '/blog' },
         { name: 'Contact Us', path: '/contact' },
-        { name: 'Dashboard', path: '/dashboard', authRequired: true },
     ];
 
     useEffect(() => {

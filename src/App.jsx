@@ -1,4 +1,5 @@
 import React from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { ThemeProvider } from './context/ThemeContext';
 import { AuthProvider, useAuth } from './context/AuthContext';
@@ -29,17 +30,14 @@ import CheckoutPage from './pages/CheckoutPage';
 import SuccessPage from './pages/SuccessPage';
 
 import Home from './pages/Home';
+import PageLoader from './components/ui/PageLoader';
 
 // Protected Route Component
 const ProtectedRoute = ({ children }) => {
     const { isAuthenticated, isLoading } = useAuth();
 
     if (isLoading) {
-        return (
-            <div className="min-h-screen flex items-center justify-center">
-                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary-500"></div>
-            </div>
-        );
+        return <PageLoader />;
     }
 
     return isAuthenticated ? children : <Navigate to="/login" />;
@@ -57,33 +55,71 @@ const DashboardPage = () => {
     return <CandidateDashboard />;
 };
 
+// Route Transition Wrapper
+const RouteTransition = ({ children }) => {
+    const [isTransitioning, setIsTransitioning] = React.useState(true);
+    const location = window.location.pathname;
+
+    React.useEffect(() => {
+        setIsTransitioning(true);
+        const timer = setTimeout(() => setIsTransitioning(false), 800);
+        return () => clearTimeout(timer);
+    }, [location]);
+
+    return (
+        <>
+            <AnimatePresence>
+                {isTransitioning && (
+                    <motion.div
+                        initial={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        transition={{ duration: 0.5 }}
+                        className="fixed inset-0 z-[100]"
+                    >
+                        <PageLoader />
+                    </motion.div>
+                )}
+            </AnimatePresence>
+            <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.2 }}
+            >
+                {children}
+            </motion.div>
+        </>
+    );
+};
+
 function App() {
     return (
         <ThemeProvider>
             <AuthProvider>
                 <CartProvider>
                     <Router>
-                        <div className="min-h-screen bg-white dark:bg-gray-900 text-gray-900 dark:text-white transition-colors overflow-x-hidden">
+                        <div className="min-h-screen bg-white dark:bg-gray-950 text-gray-900 dark:text-white transition-colors overflow-x-hidden">
                             <Routes>
                                 {/* Public Routes */}
                                 <Route path="/" element={<Home />} />
-                                <Route path="/about" element={<AboutPage />} />
-                                <Route path="/courses" element={<CoursesPage />} />
-                                <Route path="/blog" element={<BlogPage />} />
-                                <Route path="/contact" element={<ContactPage />} />
-                                <Route path="/login" element={<Login />} />
-                                <Route path="/signup" element={<SignUp />} />
+                                <Route path="/about" element={<RouteTransition><AboutPage /></RouteTransition>} />
+                                <Route path="/courses" element={<RouteTransition><CoursesPage /></RouteTransition>} />
+                                <Route path="/blog" element={<RouteTransition><BlogPage /></RouteTransition>} />
+                                <Route path="/contact" element={<RouteTransition><ContactPage /></RouteTransition>} />
+                                <Route path="/login" element={<RouteTransition><Login /></RouteTransition>} />
+                                <Route path="/signup" element={<RouteTransition><SignUp /></RouteTransition>} />
                                 <Route path="/forgot-password" element={<ForgotPassword />} />
-                                <Route path="/cart" element={<CartPage />} />
-                                <Route path="/checkout" element={<CheckoutPage />} />
+                                <Route path="/cart" element={<RouteTransition><CartPage /></RouteTransition>} />
+                                <Route path="/checkout" element={<RouteTransition><CheckoutPage /></RouteTransition>} />
                                 <Route path="/success" element={<SuccessPage />} />
 
                                 {/* Protected Routes */}
                                 <Route
-                                    path="/dashboard"
+                                    path="/dashboard/*"
                                     element={
                                         <ProtectedRoute>
-                                            <DashboardPage />
+                                            <RouteTransition>
+                                                <DashboardPage />
+                                            </RouteTransition>
                                         </ProtectedRoute>
                                     }
                                 />

@@ -72,7 +72,7 @@ const WhyChooseUs = () => {
                         The Professional Standard
                     </motion.div>
 
-                    <h2 className="text-5xl md:text-8xl font-black text-white mb-8 tracking-tighter leading-none">
+                    <h2 className="text-4xl sm:text-6xl md:text-8xl font-black text-white mb-8 tracking-tighter leading-none">
                         Engineered for <br />
                         <span className="text-gradient">Absolute Mastery</span>
                     </h2>
@@ -133,12 +133,12 @@ const WhyCard = ({ reason, idx }) => {
         >
             <div className={`absolute inset-0 bg-gradient-to-br ${reason.color} opacity-0 group-hover:opacity-20 blur-3xl transition-opacity duration-700 rounded-[40px]`}></div>
 
-            <Card className="h-full p-10 bg-white/[0.03] dark:bg-black/40 backdrop-blur-3xl border border-white/10 group-hover:border-primary-500/50 transition-all duration-700 rounded-[40px] overflow-hidden flex flex-col items-start shadow-premium kinetic-border">
+            <Card className="h-full p-6 sm:p-10 bg-white/[0.03] dark:bg-black/40 backdrop-blur-3xl border border-white/10 group-hover:border-primary-500/50 transition-all duration-700 rounded-[32px] sm:rounded-[40px] overflow-hidden flex flex-col items-start shadow-premium kinetic-border">
                 <div className={`w-16 h-16 rounded-[24px] bg-gradient-to-br ${reason.color} p-4 mb-8 shadow-glow-premium group-hover:scale-110 group-hover:rotate-6 transition-all duration-500`}>
                     <reason.icon className="w-full h-full text-white" />
                 </div>
 
-                <h3 className="text-2xl font-black text-white mb-4 tracking-tight leading-none group-hover:text-primary-400 transition-colors">
+                <h3 className="text-xl sm:text-2xl font-black text-white mb-4 tracking-tight leading-none group-hover:text-primary-400 transition-colors">
                     {reason.title}
                 </h3>
 

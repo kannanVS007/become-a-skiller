@@ -33,37 +33,44 @@ const DashboardTopBar = ({ collapsed, setCollapsed, setMobileOpen, isMobile }) =
             </div>
 
             {/* Right Section: Actions */}
-            <div className="flex items-center gap-2 md:gap-3">
-                {/* Notifications - Hidden on very small screens or compact */}
-                <button className="hidden xs:flex p-2.5 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors relative group">
-                    <FiBell className="w-5 h-5 text-gray-600 dark:text-gray-400 group-hover:text-primary-500" />
-                    <span className="absolute top-2 right-2.5 w-2 h-2 bg-red-500 rounded-full border-2 border-white dark:border-gray-900"></span>
-                </button>
+            <div className="flex items-center gap-2 md:gap-4">
+                <div className="hidden lg:flex items-center gap-2 px-4 py-2 bg-emerald-500/10 border border-emerald-500/20 rounded-xl">
+                    <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse" />
+                    <span className="text-[10px] font-black text-emerald-600 dark:text-emerald-400 uppercase tracking-widest">Live System</span>
+                </div>
 
-                {/* Messages - Hidden on very small screens */}
-                <button className="hidden xs:flex p-2.5 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors relative group">
-                    <FiMessageSquare className="w-5 h-5 text-gray-600 dark:text-gray-400 group-hover:text-primary-500" />
-                    <span className="absolute top-2 right-2.5 w-2 h-2 bg-primary-500 rounded-full border-2 border-white dark:border-gray-900"></span>
-                </button>
+                <div className="flex items-center gap-2">
+                    <button className="hidden xs:flex w-11 h-11 items-center justify-center rounded-2xl bg-gray-50 dark:bg-gray-800 hover:bg-primary-500/10 hover:text-primary-500 transition-all border border-gray-100 dark:border-white/5 group relative">
+                        <FiBell className="w-5 h-5 text-gray-500 dark:text-gray-400 group-hover:text-primary-500" />
+                        <span className="absolute top-3 right-3 w-2 h-2 bg-red-500 rounded-full border-2 border-white dark:border-gray-900 shadow-glow"></span>
+                    </button>
 
-                {/* Divider */}
-                <div className="hidden xs:block w-px h-8 bg-gray-200 dark:bg-gray-700 mx-1 md:mx-2"></div>
+                    <button className="hidden xs:flex w-11 h-11 items-center justify-center rounded-2xl bg-gray-50 dark:bg-gray-800 hover:bg-primary-500/10 hover:text-primary-500 transition-all border border-gray-100 dark:border-white/5 group relative">
+                        <FiMessageSquare className="w-5 h-5 text-gray-500 dark:text-gray-400 group-hover:text-primary-500" />
+                        <span className="absolute top-3 right-3 w-2 h-2 bg-primary-500 rounded-full border-2 border-white dark:border-gray-900 shadow-glow"></span>
+                    </button>
+                </div>
+
+                <div className="w-px h-10 bg-gray-100 dark:bg-white/10 mx-1"></div>
 
                 {/* User Profile Info */}
-                <div className="flex items-center gap-2 md:gap-3 pl-1 md:pl-2">
-                    <div className="text-right hidden md:block">
-                        <p className="text-sm font-bold text-gray-900 dark:text-white leading-tight">
+                <div className="flex items-center gap-2 sm:gap-3 pl-2 group cursor-pointer">
+                    <div className="text-right hidden sm:block">
+                        <p className="text-[10px] sm:text-xs font-black text-gray-900 dark:text-white leading-none mb-1 group-hover:text-primary-500 transition-colors">
                             {user?.name}
                         </p>
-                        <p className="text-[11px] font-medium text-primary-500 uppercase tracking-wider">
+                        <p className="text-[8px] sm:text-[9px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest">
                             {user?.role}
                         </p>
                     </div>
-                    <img
-                        src={user?.avatar || 'https://ui-avatars.com/api/?name=User&background=00A8E8&color=fff'}
-                        alt="User"
-                        className="w-10 h-10 rounded-xl border-2 border-primary-500/20 object-cover"
-                    />
+                    <div className="relative">
+                        <img
+                            src={user?.avatar || 'https://ui-avatars.com/api/?name=User&background=00A8E8&color=fff'}
+                            alt="User"
+                            className="w-11 h-11 rounded-2xl border-2 border-primary-500/20 group-hover:border-primary-500 transition-all object-cover shadow-soft"
+                        />
+                        <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-emerald-500 border-4 border-white dark:border-gray-900 rounded-full"></div>
+                    </div>
                 </div>
             </div>
         </header>

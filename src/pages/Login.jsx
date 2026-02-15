@@ -49,15 +49,20 @@ const Login = () => {
         }
 
         setIsLoading(true);
-        // Simulate API call
+        // Simulate API call with demo credentials logic
         setTimeout(() => {
+            const isAdmin = formData.email === 'admin@skiller.com' && formData.password === 'admin123';
+
             login({
-                id: 1,
-                name: 'John Doe',
+                id: isAdmin ? 0 : 1,
+                name: isAdmin ? 'System Admin' : 'John Doe',
                 email: formData.email,
-                role: 'student',
-                avatar: 'https://ui-avatars.com/api/?name=John+Doe&background=00A8E8&color=fff',
+                role: isAdmin ? 'Admin' : 'student',
+                avatar: isAdmin
+                    ? 'https://ui-avatars.com/api/?name=Admin&background=1a1a2e&color=fff'
+                    : 'https://ui-avatars.com/api/?name=John+Doe&background=00A8E8&color=fff',
             });
+
             setIsLoading(false);
             navigate('/dashboard');
         }, 1500);

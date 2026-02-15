@@ -40,18 +40,15 @@ const DashboardSidebar = ({ collapsed, setCollapsed, mobileOpen, setMobileOpen, 
             className="fixed left-0 top-0 bottom-0 bg-[#0f172a] text-gray-400 z-50 overflow-hidden flex flex-col transition-all duration-300 shadow-2xl"
         >
             {/* Sidebar Header */}
-            <div className="h-20 flex items-center px-6 border-b border-white/5">
-                <Link to="/" className="flex items-center gap-3">
-                    <img src="/img/logo.png" alt="Logo" className="w-10 h-10" />
-                    {!collapsed && (
-                        <motion.span
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            className="font-bold text-lg text-white whitespace-nowrap"
-                        >
-                            Skiller <span className="text-primary-400">Pro</span>
-                        </motion.span>
-                    )}
+            <div className="h-24 flex items-center px-6 border-b border-white/5 bg-white/[0.02]">
+                <Link to="/" className="flex items-center gap-4 group">
+                    <div className={`rounded-2xl bg-white shadow-glow-premium group-hover:scale-105 transition-transform duration-500 flex items-center justify-center overflow-hidden transition-all duration-300 ${collapsed ? 'w-12 h-12 p-2' : 'w-full h-14 p-3 px-4'}`}>
+                        <img
+                            src="/img/logo.png"
+                            alt="Logo"
+                            className={`h-auto transition-all ${collapsed ? 'w-10 min-w-[40px]' : 'w-full max-w-[180px]'}`}
+                        />
+                    </div>
                 </Link>
             </div>
 
