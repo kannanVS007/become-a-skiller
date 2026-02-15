@@ -7,11 +7,15 @@ const DashboardPreview = () => {
     const x = useMotionValue(0);
     const y = useMotionValue(0);
 
-    const mouseXSpring = useSpring(x);
-    const mouseYSpring = useSpring(y);
+    const mouseXSpring = useSpring(x, { stiffness: 150, damping: 30 });
+    const mouseYSpring = useSpring(y, { stiffness: 150, damping: 30 });
 
-    const rotateX = useTransform(mouseYSpring, [-0.5, 0.5], ["10deg", "-10deg"]);
-    const rotateY = useTransform(mouseXSpring, [-0.5, 0.5], ["-10deg", "10deg"]);
+    const rotateX = useTransform(mouseYSpring, [-0.5, 0.5], ["18deg", "-18deg"]);
+    const rotateY = useTransform(mouseXSpring, [-0.5, 0.5], ["-18deg", "18deg"]);
+    const bgX = useTransform(mouseXSpring, [-0.5, 0.5], ["-12%", "12%"]);
+    const bgY = useTransform(mouseYSpring, [-0.5, 0.5], ["-12%", "12%"]);
+    const glareX = useTransform(mouseXSpring, [-0.5, 0.5], ["-50%", "50%"]);
+    const glareY = useTransform(mouseYSpring, [-0.5, 0.5], ["-50%", "50%"]);
 
     const handleMouseMove = (e) => {
         const rect = e.currentTarget.getBoundingClientRect();
@@ -37,140 +41,233 @@ const DashboardPreview = () => {
         { icon: FiActivity, label: 'Uptime', value: '100%', color: 'from-emerald-400 to-teal-500' }
     ];
 
+    // Particle field constants
+    const particles = Array.from({ length: 25 });
+
     return (
-        <section id="kinetic-dashboard" className="py-32 px-4 relative overflow-hidden bg-gray-950">
-            {/* Animated Grid Background */}
-            <div className="absolute inset-0 opacity-20"
-                style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, #333 1px, transparent 0)', backgroundSize: '40px 40px' }}
-            />
+        <section id="kinetic-dashboard" className="py-24 sm:py-56 px-4 sm:px-8 relative overflow-hidden bg-[#02040a]">
+            {/* Neural Particle Field */}
+            <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
+                {particles.map((_, i) => (
+                    <motion.div
+                        key={i}
+                        initial={{
+                            x: Math.random() * 2000 - 1000,
+                            y: Math.random() * 2000 - 1000,
+                            opacity: Math.random() * 0.3
+                        }}
+                        animate={{
+                            y: [null, Math.random() * -100 - 50],
+                            opacity: [null, 0.1, 0.4, 0.1]
+                        }}
+                        transition={{
+                            duration: Math.random() * 10 + 10,
+                            repeat: Infinity,
+                            ease: "linear"
+                        }}
+                        style={{
+                            width: Math.random() * 3 + 1,
+                            height: Math.random() * 3 + 1,
+                            background: i % 2 === 0 ? '#3b82f6' : '#a855f7',
+                            filter: 'blur(2px)',
+                            borderRadius: '50%',
+                            position: 'absolute',
+                            left: `${Math.random() * 100}%`,
+                            top: `${Math.random() * 100}%`,
+                        }}
+                    />
+                ))}
+            </div>
+
+            {/* Living Borders (Light Beams) */}
+            <div className="absolute top-0 left-0 right-0 overflow-hidden h-px bg-white/5">
+                <motion.div
+                    animate={{ x: ['-100%', '100%'] }}
+                    transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
+                    className="w-1/4 h-full bg-gradient-to-r from-transparent via-primary-500/40 to-transparent"
+                />
+            </div>
+            <div className="absolute bottom-0 left-0 right-0 overflow-hidden h-px bg-white/5">
+                <motion.div
+                    animate={{ x: ['100%', '-100%'] }}
+                    transition={{ duration: 4, repeat: Infinity, ease: "linear" }}
+                    className="w-1/4 h-full bg-gradient-to-r from-transparent via-purple-500/40 to-transparent"
+                />
+            </div>
+
+            {/* Cinematic Mesh Background */}
+            <motion.div
+                style={{ x: bgX, y: bgY }}
+                className="absolute inset-0 z-0 pointer-events-none"
+            >
+                <div className="absolute top-0 left-1/4 w-[1000px] h-[1000px] bg-primary-600/10 blur-[200px] rounded-full animate-pulse" />
+                <div className="absolute bottom-0 right-1/4 w-[1200px] h-[1200px] bg-purple-700/10 blur-[250px] rounded-full animation-delay-3000 animate-pulse" />
+            </motion.div>
 
             <div className="max-w-7xl mx-auto relative z-10">
-                <div className="grid lg:grid-cols-2 gap-12 md:gap-24 items-center">
-                    {/* Content Section */}
-                    <motion.div
-                        initial={{ opacity: 0, x: -60 }}
-                        whileInView={{ opacity: 1, x: 0 }}
-                        viewport={{ once: true }}
-                        transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
-                    >
-                        <div className="inline-flex items-center gap-3 px-5 py-2 rounded-full bg-primary-500/10 border border-primary-500/20 mb-8">
-                            <FiActivity className="text-primary-500 animate-pulse" />
-                            <span className="text-[10px] font-black text-primary-400 uppercase tracking-widest">Live Integration</span>
-                        </div>
+                <div className="grid lg:grid-cols-2 gap-16 md:gap-32 items-center">
+                    {/* Content Section with Staggered Parallax */}
+                    <div className="relative">
+                        <motion.div
+                            initial={{ opacity: 0, x: -50 }}
+                            whileInView={{ opacity: 1, x: 0 }}
+                            viewport={{ once: true }}
+                            transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
+                        >
+                            <motion.div
+                                className="inline-flex items-center gap-3 px-5 py-2 rounded-full bg-white/5 border border-white/10 mb-8 backdrop-blur-xl"
+                            >
+                                <span className="relative flex h-2 w-2">
+                                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary-400 opacity-75"></span>
+                                    <span className="relative inline-flex rounded-full h-2 w-2 bg-primary-500"></span>
+                                </span>
+                                <span className="text-[10px] font-black text-white/60 uppercase tracking-[0.4em]">Neural Integration v4.0</span>
+                            </motion.div>
 
-                        <h2 className="text-4xl sm:text-6xl md:text-7xl font-black text-white mb-8 tracking-tighter leading-none">
-                            High-Fidelity <br />
-                            <span className="text-gradient">Control Center</span>
-                        </h2>
-
-                        <p className="text-xl text-gray-400 mb-12 font-medium leading-relaxed max-w-lg">
-                            Experience zero-latency analytics. Our cinematic dashboard provides
-                            unprecedented depth into your learning trajectory and institutional growth.
-                        </p>
-
-                        <div className="grid grid-cols-2 gap-6">
-                            {stats.map((stat, idx) => (
-                                <motion.div
-                                    key={stat.label}
-                                    initial={{ opacity: 0, y: 20 }}
+                            <h2 className="text-6xl sm:text-7xl md:text-9xl font-black text-white mb-10 tracking-[-0.06em] leading-[0.8]">
+                                <motion.span
+                                    className="block"
+                                    initial={{ opacity: 0, y: 30 }}
                                     whileInView={{ opacity: 1, y: 0 }}
-                                    transition={{ delay: idx * 0.1 }}
-                                    className="p-6 rounded-[32px] bg-white/[0.02] border border-white/5 hover:border-white/10 transition-colors group"
-                                >
-                                    <div className={`w-12 h-12 rounded-2xl bg-gradient-to-br ${stat.color} p-3 mb-4 shadow-glow-premium group-hover:scale-110 transition-transform`}>
-                                        <stat.icon className="text-white w-full h-full" />
-                                    </div>
-                                    <p className="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-1">{stat.label}</p>
-                                    <h4 className="text-2xl font-black text-white">{stat.value}</h4>
-                                </motion.div>
-                            ))}
-                        </div>
-                    </motion.div>
+                                    transition={{ duration: 0.8, delay: 0.1 }}
+                                >Strictly</motion.span>
+                                <motion.span
+                                    className="text-gradient block italic"
+                                    initial={{ opacity: 0, y: 30 }}
+                                    whileInView={{ opacity: 1, y: 0 }}
+                                    transition={{ duration: 0.8, delay: 0.2 }}
+                                >Elite Control</motion.span>
+                            </h2>
 
-                    {/* 3D Mockup Section */}
-                    <div className="relative" onMouseMove={handleMouseMove} onMouseLeave={handleMouseLeave}>
-                        {/* Data Streams (Animated SVGs) */}
-                        <svg className="absolute inset-0 w-full h-full z-0 pointer-events-none overflow-visible">
-                            <motion.path
-                                d="M 0 100 Q 150 50 300 150 T 600 100"
-                                fill="none"
-                                stroke="url(#stream-grad)"
-                                strokeWidth="2"
-                                strokeDasharray="10 20"
-                                animate={{ strokeDashoffset: [0, -100] }}
-                                transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
-                            />
-                            <defs>
-                                <linearGradient id="stream-grad" x1="0%" y1="0%" x2="100%" y2="0%">
-                                    <stop offset="0%" stopColor="#00A8E8" stopOpacity="0" />
-                                    <stop offset="50%" stopColor="#00A8E8" stopOpacity="0.5" />
-                                    <stop offset="100%" stopColor="#7B68EE" stopOpacity="0" />
-                                </linearGradient>
-                            </defs>
-                        </svg>
+                            <motion.p
+                                initial={{ opacity: 0, y: 20 }}
+                                whileInView={{ opacity: 1, y: 0 }}
+                                transition={{ duration: 0.8, delay: 0.3 }}
+                                className="text-lg sm:text-2xl text-gray-400/80 mb-12 font-medium leading-tight max-w-xl"
+                            >
+                                Experience the pinnacle of educational intelligence.
+                                A cinema-grade command center for the next generation of Skillers.
+                            </motion.p>
+
+                            <div className="grid grid-cols-2 gap-4 sm:gap-6">
+                                {stats.map((stat, idx) => (
+                                    <motion.div
+                                        key={stat.label}
+                                        initial={{ opacity: 0, scale: 0.9, y: 20 }}
+                                        whileInView={{ opacity: 1, scale: 1, y: 0 }}
+                                        viewport={{ once: true }}
+                                        transition={{ delay: 0.4 + idx * 0.1, duration: 0.8 }}
+                                        whileHover={{ y: -8, transition: { duration: 0.3 } }}
+                                        className="p-6 sm:p-9 rounded-[48px] bg-white/[0.02] border border-white/5 hover:border-primary-500/40 transition-all duration-700 group relative overflow-hidden"
+                                    >
+                                        <div className="absolute inset-0 bg-gradient-to-br from-primary-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                                        <div className={`w-14 h-14 rounded-[22px] bg-gradient-to-br ${stat.color} p-4 mb-7 shadow-glow-premium group-hover:scale-110 transition-transform duration-500`}>
+                                            <stat.icon className="text-white w-full h-full" />
+                                        </div>
+                                        <p className="text-[10px] sm:text-[12px] font-black text-gray-500 uppercase tracking-[0.3em] mb-2">{stat.label}</p>
+                                        <h4 className="text-3xl sm:text-4xl font-black text-white tracking-tighter leading-none">{stat.value}</h4>
+                                    </motion.div>
+                                ))}
+                            </div>
+                        </motion.div>
+                    </div>
+
+                    {/* 3D Intra-Parallax Mockup Section */}
+                    <motion.div
+                        initial={{ opacity: 0, scale: 0.85, rotateY: 25 }}
+                        whileInView={{ opacity: 1, scale: 1, rotateY: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ duration: 1.8, ease: [0.16, 1, 0.3, 1] }}
+                        className="relative perspective-3000 hidden md:block"
+                        onMouseMove={handleMouseMove}
+                        onMouseLeave={handleMouseLeave}
+                    >
+                        {/* External Ambient Glow */}
+                        <div className="absolute -inset-40 bg-primary-500/20 blur-[150px] rounded-full z-0 animate-pulse duration-[5000ms]" />
 
                         <motion.div
-                            style={{ rotateX, rotateY, transformStyle: "preserve-3d" }}
+                            style={{
+                                rotateX,
+                                rotateY,
+                                transformStyle: "preserve-3d"
+                            }}
                             className="relative z-10"
                         >
-                            <Card className="p-0 overflow-hidden bg-white/[0.05] border-white/20 dark:border-white/10 shadow-[0_100px_200px_-50px_rgba(0,0,0,0.8)] rounded-[48px] rotate-2 group hover:rotate-0 transition-transform duration-1000">
-                                <div className="relative">
-                                    <img
-                                        src="/img/dashboard.jpg"
-                                        alt="Dashboard Mockup"
-                                        className="w-full h-auto opacity-90 group-hover:opacity-100 transition-opacity duration-700"
-                                    />
-                                    <div className="absolute inset-0 bg-gradient-to-tr from-primary-500/20 via-transparent to-transparent pointer-events-none" />
+                            {/* The Main 3D Card */}
+                            <div className="relative group perspective-2000">
+                                <Card className="p-0 overflow-hidden bg-[#0a0f1d] border-white/20 shadow-[0_120px_200px_-40px_rgba(0,0,0,0.95)] rounded-[56px] transition-all duration-1000 transform-gpu overflow-hidden">
+                                    <div className="relative">
+                                        <motion.img
+                                            src="/img/dashboard.jpg"
+                                            alt="Dashboard Mockup"
+                                            className="w-full h-auto opacity-100 scale-[1.02] group-hover:scale-[1.05] transition-transform duration-[2000ms] ease-out"
+                                        />
 
-                                    {/* OS Chromes */}
-                                    <div className="absolute top-8 left-8 flex gap-3">
-                                        {[1, 2, 3].map(i => (
-                                            <div key={i} className={`w-3.5 h-3.5 rounded-full ${i === 1 ? 'bg-red-500/60' : i === 2 ? 'bg-yellow-500/60' : 'bg-green-500/60'} backdrop-blur-sm shadow-glow-premium`} />
-                                        ))}
+                                        {/* Cinematic Scanlines */}
+                                        <div className="absolute inset-0 bg-scanline pointer-events-none opacity-[0.04]" />
+
+                                        {/* Intra-Mockup Glare Parallax */}
+                                        <motion.div
+                                            style={{ x: glareX, y: glareY }}
+                                            className="absolute -inset-1/2 bg-gradient-radial from-white/10 to-transparent pointer-events-none z-20"
+                                        />
+
+                                        {/* Colored Gradients */}
+                                        <div className="absolute inset-0 bg-gradient-to-tr from-primary-500/20 via-transparent to-purple-500/20 pointer-events-none z-10" />
+
+                                        {/* Minimal OS Chrome */}
+                                        <div className="absolute top-10 left-12 flex gap-3 z-30">
+                                            {[1, 2, 3].map(i => (
+                                                <div key={i} className={`w-3.5 h-3.5 rounded-full ${i === 1 ? 'bg-red-500/50' : i === 2 ? 'bg-yellow-500/50' : 'bg-green-500/50'} shadow-glow-sm`} />
+                                            ))}
+                                        </div>
                                     </div>
-                                </div>
-                            </Card>
+                                </Card>
 
-                            {/* Floating Snippets */}
-                            <AnimatePresence>
+                                {/* Floating Holographic Data Projection 1 */}
                                 <motion.div
-                                    key="snippet-growth"
-                                    animate={{ y: [0, -20, 0] }}
-                                    transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-                                    className="absolute -top-6 sm:-top-12 -right-0 sm:-right-2 p-4 sm:p-6 rounded-[24px] sm:rounded-[32px] bg-white/10 backdrop-blur-3xl border border-white/20 shadow-premium z-20 flex items-center gap-3 sm:gap-4 group hover:scale-110 transition-transform"
+                                    style={{
+                                        translateZ: 100,
+                                        y: [0, -40, 0]
+                                    }}
+                                    transition={{ duration: 7, repeat: Infinity, ease: "easeInOut" }}
+                                    className="absolute -top-16 -right-12 p-8 rounded-[40px] bg-white/[0.03] backdrop-blur-3xl border border-white/20 shadow-[0_50px_100px_-20px_rgba(0,0,0,0.5)] z-40 flex items-center gap-6 group hover:border-primary-500/50 transition-colors"
                                 >
-                                    <div className="w-10 h-10 sm:w-14 sm:h-14 bg-gradient-primary rounded-xl sm:rounded-2xl flex items-center justify-center shadow-glow-premium">
-                                        <FiTrendingUp className="text-white w-5 h-5 sm:w-7 sm:h-7" />
+                                    <div className="w-16 h-16 bg-gradient-primary rounded-[22px] flex items-center justify-center shadow-glow-premium group-hover:rotate-12 transition-transform">
+                                        <FiTrendingUp className="text-white w-8 h-8" />
                                     </div>
-                                    <div>
-                                        <p className="text-[8px] sm:text-[10px] font-black text-primary-400 uppercase tracking-widest mb-1">Growth</p>
-                                        <p className="text-lg sm:text-2xl font-black text-white">+124.5%</p>
+                                    <div className="pr-4">
+                                        <p className="text-[11px] font-black text-primary-400 uppercase tracking-[0.4em] mb-2 leading-none">Neural Load</p>
+                                        <p className="text-4xl font-black text-white tracking-tighter leading-none">+124.5%</p>
                                     </div>
                                 </motion.div>
 
+                                {/* Floating Holographic Data Projection 2 */}
                                 <motion.div
-                                    key="snippet-users"
-                                    animate={{ y: [0, 20, 0] }}
-                                    transition={{ duration: 5, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
-                                    className="absolute -bottom-12 -left-12 p-5 rounded-[28px] bg-gray-950/80 backdrop-blur-2xl border border-white/10 shadow-premium z-20 hidden md:flex items-center gap-4"
+                                    style={{
+                                        translateZ: 80,
+                                        y: [0, 40, 0]
+                                    }}
+                                    transition={{ duration: 8, repeat: Infinity, ease: "easeInOut", delay: 1 }}
+                                    className="absolute -bottom-20 -left-16 p-7 rounded-[40px] bg-gray-950/90 backdrop-blur-3xl border border-white/10 shadow-premium z-40 flex items-center gap-6 group hover:border-emerald-500/50 transition-colors"
                                 >
-                                    <div className="w-12 h-12 bg-emerald-500/20 text-emerald-500 rounded-xl flex items-center justify-center">
-                                        <FiUsers className="w-6 h-6" />
+                                    <div className="w-16 h-16 bg-emerald-500/10 text-emerald-500 rounded-[22px] flex items-center justify-center border border-emerald-500/20 group-hover:scale-110 transition-transform">
+                                        <FiUsers className="w-8 h-8" />
                                     </div>
-                                    <div className="pr-6">
-                                        <p className="text-[9px] font-black text-gray-500 uppercase tracking-widest mb-1">Active Now</p>
-                                        <p className="text-xl font-black text-white">4,289</p>
+                                    <div className="pr-10">
+                                        <p className="text-[11px] font-black text-gray-500 uppercase tracking-[0.2em] mb-2 leading-none">Global Sync</p>
+                                        <p className="text-3xl font-black text-white tracking-tighter leading-none">4,382 Live</p>
                                     </div>
                                 </motion.div>
-                            </AnimatePresence>
+                            </div>
                         </motion.div>
 
-                        {/* Kinetic Background elements */}
-                        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[150%] h-[150%] opacity-10 pointer-events-none z-0">
-                            <div className="absolute inset-0 border-[2px] border-dashed border-primary-500/30 rounded-full rotate-center" />
-                            <div className="absolute inset-[10%] border-[2px] border-dashed border-purple-500/20 rounded-full rotate-center-reverse" style={{ animationDuration: '40s' }} />
+                        {/* Large Orbital Background Rims */}
+                        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[220%] h-[220%] opacity-[0.08] pointer-events-none z-0">
+                            <div className="absolute inset-0 border-[2px] border-dashed border-primary-500/30 rounded-full rotate-center" style={{ animationDuration: '80s' }} />
+                            <div className="absolute inset-[15%] border-[1.5px] border-white/10 rounded-full animate-pulse" />
                         </div>
-                    </div>
+                    </motion.div>
                 </div>
             </div>
         </section>
