@@ -8,7 +8,7 @@ const DashboardTopBar = ({ collapsed, setCollapsed, setMobileOpen, isMobile }) =
     return (
         <header className="h-20 bg-white dark:bg-gray-900 border-b border-gray-100 dark:border-gray-800 flex items-center justify-between px-4 md:px-8 transition-all duration-300">
             {/* Left Section: Search & Mobile Toggle */}
-            <div className="flex items-center gap-4 flex-1 max-w-xl">
+            <div className="flex items-center gap-2 sm:gap-4 flex-1 max-w-xl">
                 {isMobile && (
                     <button
                         onClick={() => setMobileOpen(true)}
@@ -17,6 +17,16 @@ const DashboardTopBar = ({ collapsed, setCollapsed, setMobileOpen, isMobile }) =
                         <FiMenu className="w-6 h-6" />
                     </button>
                 )}
+
+                <div className="flex flex-col sm:hidden">
+                    <span className="text-[10px] font-black text-primary-500 uppercase tracking-widest leading-tight">
+                        {user?.role === 'Admin' ? 'Admin' : 'Student'}
+                    </span>
+                    <h2 className="text-sm font-black text-gray-900 dark:text-white leading-tight">
+                        Dashboard
+                    </h2>
+                </div>
+
                 <div className="relative w-full hidden sm:block">
                     <FiSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
                     <input
@@ -25,11 +35,6 @@ const DashboardTopBar = ({ collapsed, setCollapsed, setMobileOpen, isMobile }) =
                         className="w-full pl-12 pr-4 py-2.5 bg-gray-50 dark:bg-gray-800/50 border border-gray-200 dark:border-gray-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 transition-all text-sm"
                     />
                 </div>
-                {isMobile && (
-                    <button className="sm:hidden p-2 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-600 dark:text-gray-400">
-                        <FiSearch className="w-6 h-6" />
-                    </button>
-                )}
             </div>
 
             {/* Right Section: Actions */}
@@ -55,11 +60,11 @@ const DashboardTopBar = ({ collapsed, setCollapsed, setMobileOpen, isMobile }) =
 
                 {/* User Profile Info */}
                 <div className="flex items-center gap-2 sm:gap-3 pl-2 group cursor-pointer">
-                    <div className="text-right hidden sm:block">
+                    <div className="text-right">
                         <p className="text-[10px] sm:text-xs font-black text-gray-900 dark:text-white leading-none mb-1 group-hover:text-primary-500 transition-colors">
-                            {user?.name}
+                            {user?.name?.split(' ')[0]}
                         </p>
-                        <p className="text-[8px] sm:text-[9px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest">
+                        <p className="text-[8px] sm:text-[9px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest hidden xs:block">
                             {user?.role}
                         </p>
                     </div>

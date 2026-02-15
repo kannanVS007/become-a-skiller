@@ -36,26 +36,26 @@ const AdminDashboard = () => {
                             animate={{ opacity: 1, x: 0 }}
                             transition={{ duration: 0.8 }}
                         >
-                            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/5 border border-white/10 mb-4">
+                            <div className="inline-flex items-center gap-2 px-3 sm:px-4 py-1.5 rounded-full bg-white/5 border border-white/10 mb-4">
                                 <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                                <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">System Operational</span>
+                                <span className="text-[9px] sm:text-[10px] font-black text-gray-400 uppercase tracking-widest">Admin Command Center</span>
                             </div>
-                            <h1 className="text-4xl sm:text-5xl md:text-6xl font-black text-white tracking-tighter leading-none">
-                                Enterprise <br />
-                                <span className="text-gradient">Command Center</span>
+                            <h1 className="text-3xl sm:text-5xl md:text-6xl font-black text-white tracking-tighter leading-none">
+                                Performance <br />
+                                <span className="text-gradient">Intelligence Hub</span>
                             </h1>
                         </motion.div>
 
                         <motion.div
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
-                            className="flex gap-4"
+                            className="flex flex-wrap gap-3 sm:gap-4"
                         >
-                            <button className="px-6 py-3 bg-white/5 hover:bg-white/10 border border-white/10 rounded-2xl text-sm font-bold text-white transition-all backdrop-blur-xl">
+                            <button className="flex-1 sm:flex-none px-4 sm:px-6 py-3 bg-white/5 hover:bg-white/10 border border-white/10 rounded-2xl text-xs sm:text-sm font-bold text-white transition-all backdrop-blur-xl">
                                 System Logs
                             </button>
-                            <button className="px-6 py-3 bg-primary-500 text-white rounded-2xl text-sm font-bold shadow-glow-premium hover:bg-primary-600 transition-all">
-                                Generate Intelligence
+                            <button className="flex-1 sm:flex-none px-4 sm:px-6 py-3 bg-primary-500 text-white rounded-2xl text-xs sm:text-sm font-bold shadow-glow-premium hover:bg-primary-600 transition-all">
+                                Action Hub
                             </button>
                         </motion.div>
                     </div>
@@ -148,7 +148,7 @@ const AdminDashboard = () => {
                             <h3 className="text-2xl font-black text-white mb-10 tracking-tight self-start">User Logistics</h3>
 
                             {/* 3D Moving Doughnut Mockup using SVGs and Framer */}
-                            <div className="relative w-64 h-64 mb-10">
+                            <div className="relative w-48 h-48 sm:w-64 sm:h-64 mb-10">
                                 <motion.svg
                                     viewBox="0 0 100 100"
                                     className="w-full h-full drop-shadow-[0_0_30px_rgba(0,168,232,0.3)]"
