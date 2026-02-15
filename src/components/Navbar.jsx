@@ -239,9 +239,9 @@ const Navbar = () => {
                                                 </p>
                                             </div>
                                         </div>
-                                        <Link to="/dashboard" onClick={() => setIsMobileMenuOpen(false)}>
+                                        <Link to="/dashboard" onClick={() => setIsMobileMenuOpen(false)} className="block">
                                             <Button variant="primary" size="sm" className="w-full shadow-glow">
-                                                Dashboard
+                                                Dashboard Hub
                                             </Button>
                                         </Link>
                                     </div>
