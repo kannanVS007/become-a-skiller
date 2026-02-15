@@ -16,9 +16,8 @@ const ProfileDropdown = ({ isOpen, onClose }) => {
     };
 
     const menuItems = [
-        { icon: FiGrid, label: 'Dashboard', to: '/dashboard' },
-        { icon: FiUser, label: 'Profile', to: '/profile' },
-        { icon: FiSettings, label: 'Settings', to: '/settings' },
+        { icon: FiGrid, label: 'Dashboard Hub', to: '/dashboard' },
+        { icon: FiSettings, label: 'Account Settings', to: '/dashboard/settings' },
     ];
 
     const handleLogout = () => {

@@ -239,9 +239,9 @@ const Navbar = () => {
                                                 </p>
                                             </div>
                                         </div>
-                                        <Link to="/profile">
-                                            <Button variant="secondary" size="sm" className="w-full">
-                                                View Profile
+                                        <Link to="/dashboard" onClick={() => setIsMobileMenuOpen(false)}>
+                                            <Button variant="primary" size="sm" className="w-full shadow-glow">
+                                                Dashboard
                                             </Button>
                                         </Link>
                                     </div>
