@@ -18,29 +18,41 @@ import CoursesPage from './pages/CoursesPage';
 import AboutPage from './pages/AboutPage';
 import BlogPage from './pages/BlogPage';
 import ContactPage from './pages/ContactPage';
+import JobsPage from './pages/JobsPage';
+import CourseDetails from './pages/CourseDetails';
 
 // Pages
 import Login from './pages/Login';
 import SignUp from './pages/SignUp';
 import ForgotPassword from './pages/ForgotPassword';
-import CandidateDashboard from './pages/CandidateDashboard';
-import AdminDashboard from './pages/AdminDashboard';
+import CandidateDashboard from './pages/dashboard/UserDashboard';
+import AdminDashboard from './pages/admin/AdminDashboard';
 import CartPage from './pages/CartPage';
 import CheckoutPage from './pages/CheckoutPage';
 import SuccessPage from './pages/SuccessPage';
+import CreateCourse from './pages/trainer/CreateCourse';
+import CreateJob from './pages/trainer/CreateJob';
 
 import Home from './pages/Home';
 import PageLoader from './components/ui/PageLoader';
 
 // Protected Route Component
-const ProtectedRoute = ({ children }) => {
-    const { isAuthenticated, isLoading } = useAuth();
+const ProtectedRoute = ({ children, roles }) => {
+    const { isAuthenticated, isLoading, user } = useAuth();
 
     if (isLoading) {
         return <PageLoader />;
     }
 
-    return isAuthenticated ? children : <Navigate to="/login" />;
+    if (!isAuthenticated) {
+        return <Navigate to="/login" />;
+    }
+
+    if (roles && !roles.includes(user?.role)) {
+        return <Navigate to="/" />;
+    }
+
+    return children;
 };
 
 // Dashboard Wrapper
@@ -103,8 +115,10 @@ function App() {
                                 <Route path="/" element={<Home />} />
                                 <Route path="/about" element={<RouteTransition><AboutPage /></RouteTransition>} />
                                 <Route path="/courses" element={<RouteTransition><CoursesPage /></RouteTransition>} />
+                                <Route path="/courses/:id" element={<RouteTransition><CourseDetails /></RouteTransition>} />
                                 <Route path="/blog" element={<RouteTransition><BlogPage /></RouteTransition>} />
                                 <Route path="/contact" element={<RouteTransition><ContactPage /></RouteTransition>} />
+                                <Route path="/jobs" element={<RouteTransition><JobsPage /></RouteTransition>} />
                                 <Route path="/login" element={<RouteTransition><Login /></RouteTransition>} />
                                 <Route path="/signup" element={<RouteTransition><SignUp /></RouteTransition>} />
                                 <Route path="/forgot-password" element={<ForgotPassword />} />
@@ -120,6 +134,22 @@ function App() {
                                             <RouteTransition>
                                                 <DashboardPage />
                                             </RouteTransition>
+                                        </ProtectedRoute>
+                                    }
+                                />
+                                <Route
+                                    path="/trainer/create-course"
+                                    element={
+                                        <ProtectedRoute roles={['trainer', 'Admin']}>
+                                            <RouteTransition><CreateCourse /></RouteTransition>
+                                        </ProtectedRoute>
+                                    }
+                                />
+                                <Route
+                                    path="/trainer/create-job"
+                                    element={
+                                        <ProtectedRoute roles={['trainer', 'Admin']}>
+                                            <RouteTransition><CreateJob /></RouteTransition>
                                         </ProtectedRoute>
                                     }
                                 />
