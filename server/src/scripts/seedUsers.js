@@ -32,13 +32,14 @@ const seedUsers = async () => {
 
         const users = [];
         const salt = await bcrypt.genSalt(10);
-        const hashedPassword = await bcrypt.hash('password123', salt);
+        const adminHashedPassword = await bcrypt.hash('skiller2026', salt); // Hashed password for admin
+        const defaultHashedPassword = await bcrypt.hash('password123', salt); // Hashed password for other users
 
         // 1. Create Admin
         users.push({
             name: 'Super Admin',
             email: 'admin@becomeskiller.com',
-            password: hashedPassword,
+            password: adminHashedPassword, // Updated password
             role: 'admin',
             mobile: '9876543210',
             isEmailVerified: true,
