@@ -182,7 +182,7 @@ export const getWelcomeEmailHtml = (name) => {
         <div class="footer">
             <p style="color: #ffffff; font-weight: 600; margin-bottom: 20px;">Believe. Begin. Become.</p>
             <div style="font-size: 13px; line-height: 1.8;">
-                &copy; 2024 Become A Skiller. Built with ❤️ for future masters.<br>
+                &copy; 2026 Become A Skiller. Built with ❤️ for future masters.<br>
                 Tirunelveli, Tamil Nadu, India
             </div>
             <div style="margin-top: 25px;">

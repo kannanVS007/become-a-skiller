@@ -4,7 +4,7 @@
  *
  * Creates an admin user:
  *   Email:    vskannan4135@gmail.com
- *   Password: Admin@1234
+ *   Password: skiller2026
  */
 import mongoose from 'mongoose';
 import bcrypt from 'bcryptjs';
@@ -39,7 +39,7 @@ async function seed() {
     }
 
     const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash('Admin@1234', salt);
+    const hashedPassword = await bcrypt.hash('skiller2026', salt);
 
     await User.create({
         name: 'Kannan VS',
@@ -51,7 +51,7 @@ async function seed() {
 
     console.log('🎉 Admin user created!');
     console.log('   Email:    vskannan4135@gmail.com');
-    console.log('   Password: Admin@1234');
+    console.log('   Password: skiller2026');
     process.exit(0);
 }
 
