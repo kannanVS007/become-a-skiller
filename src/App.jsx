@@ -20,6 +20,7 @@ import BlogPage from './pages/BlogPage';
 import ContactPage from './pages/ContactPage';
 import JobsPage from './pages/JobsPage';
 import CourseDetails from './pages/CourseDetails';
+import LearningPage from './pages/LearningPage';
 
 // Pages
 import Login from './pages/Login';
@@ -27,6 +28,7 @@ import SignUp from './pages/SignUp';
 import ForgotPassword from './pages/ForgotPassword';
 import CandidateDashboard from './pages/dashboard/UserDashboard';
 import AdminDashboard from './pages/admin/AdminDashboard';
+import UserManagement from './pages/admin/UserManagement';
 import CartPage from './pages/CartPage';
 import CheckoutPage from './pages/CheckoutPage';
 import SuccessPage from './pages/SuccessPage';
@@ -59,7 +61,7 @@ const ProtectedRoute = ({ children, roles }) => {
 const DashboardPage = () => {
     const { user } = useAuth();
 
-    if (user?.role === 'Admin') {
+    if (user?.role === 'admin') {
         return <AdminDashboard />;
     }
 
@@ -128,6 +130,16 @@ function App() {
 
                                 {/* Protected Routes */}
                                 <Route
+                                    path="/dashboard/users"
+                                    element={
+                                        <ProtectedRoute roles={['admin']}>
+                                            <RouteTransition>
+                                                <UserManagement />
+                                            </RouteTransition>
+                                        </ProtectedRoute>
+                                    }
+                                />
+                                <Route
                                     path="/dashboard/*"
                                     element={
                                         <ProtectedRoute>
@@ -140,7 +152,7 @@ function App() {
                                 <Route
                                     path="/trainer/create-course"
                                     element={
-                                        <ProtectedRoute roles={['trainer', 'Admin']}>
+                                        <ProtectedRoute roles={['trainer', 'admin']}>
                                             <RouteTransition><CreateCourse /></RouteTransition>
                                         </ProtectedRoute>
                                     }
@@ -148,7 +160,7 @@ function App() {
                                 <Route
                                     path="/trainer/create-job"
                                     element={
-                                        <ProtectedRoute roles={['trainer', 'Admin']}>
+                                        <ProtectedRoute roles={['trainer', 'admin']}>
                                             <RouteTransition><CreateJob /></RouteTransition>
                                         </ProtectedRoute>
                                     }

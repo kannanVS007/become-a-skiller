@@ -45,7 +45,13 @@ const UserDashboard = () => {
                                             style={{ width: `${enrol.progress.percentage}%` }}
                                         ></div>
                                     </div>
-                                    <p className="text-sm text-gray-500">{enrol.progress.percentage}% Completed</p>
+                                    <p className="text-sm text-gray-500 mb-4">{enrol.progress.percentage}% Completed</p>
+                                    <a
+                                        href={`/learn/${enrol.course._id}`}
+                                        className="block w-full text-center py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-bold transition-colors"
+                                    >
+                                        Continue Learning
+                                    </a>
                                 </div>
                             </div>
                         ))}
@@ -70,7 +76,7 @@ const UserDashboard = () => {
                                         <td className="py-3 px-2">{app.job.company}</td>
                                         <td className="py-3 px-2">
                                             <span className={`px-2 py-1 rounded-full text-xs ${app.status === 'pending' ? 'bg-yellow-100 text-yellow-700' :
-                                                    app.status === 'rejected' ? 'bg-red-100 text-red-700' : 'bg-green-100 text-green-700'
+                                                app.status === 'rejected' ? 'bg-red-100 text-red-700' : 'bg-green-100 text-green-700'
                                                 }`}>
                                                 {app.status}
                                             </span>

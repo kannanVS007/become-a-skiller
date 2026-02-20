@@ -20,15 +20,15 @@ const ContactPage = () => {
         {
             icon: FiMail,
             label: 'Email Us',
-            value: 'hello@becomeskiller.com',
+            value: 'vskannan4135@gmail.com',
             description: 'Our team typically responds within 2 hours.',
             color: 'text-primary-500'
         },
         {
             icon: FiPhone,
             label: 'Call Us',
-            value: '+1 (555) 000-0000',
-            description: 'Mon-Fri from 8am to 5pm.',
+            value: '+91 63795 24135',
+            description: 'Mon-Sat from 9am to 6pm.',
             color: 'text-blue-500'
         },
         {

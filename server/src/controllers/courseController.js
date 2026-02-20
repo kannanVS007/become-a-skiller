@@ -1,4 +1,7 @@
+
 import Course from '../models/Course.js';
+import { Enrollment } from '../models/Transaction.js';
+import ErrorResponse from '../utils/errorResponse.js';
 
 // @desc    Get all courses
 // @route   GET /api/v1/courses
@@ -87,3 +90,31 @@ export const deleteCourse = async (req, res, next) => {
         next(err);
     }
 };
+
+// @desc    Get current user's enrollment status for a course
+// @route   GET /api/v1/courses/:id/enrollment
+// @access  Private
+export const getCourseEnrollmentStatus = async (req, res, next) => {
+    try {
+        const enrollment = await Enrollment.findOne({
+            user: req.user.id,
+            course: req.params.id
+        });
+
+        if (!enrollment) {
+            return res.status(200).json({
+                success: true,
+                data: null,
+                message: 'Not enrolled'
+            });
+        }
+
+        res.status(200).json({
+            success: true,
+            data: enrollment
+        });
+    } catch (err) {
+        next(err);
+    }
+};
+

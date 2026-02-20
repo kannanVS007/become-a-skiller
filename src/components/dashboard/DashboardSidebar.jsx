@@ -28,7 +28,7 @@ const DashboardSidebar = ({ collapsed, setCollapsed, mobileOpen, setMobileOpen, 
         { name: 'Settings', path: '/dashboard/settings', icon: FiSettings },
     ];
 
-    const links = user?.role === 'Admin' ? adminLinks : candidateLinks;
+    const links = user?.role === 'admin' ? adminLinks : candidateLinks;
 
     return (
         <motion.aside

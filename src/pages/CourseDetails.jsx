@@ -6,12 +6,24 @@ import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import RazorpayPayment from '../components/RazorpayPayment';
 import api from '../services/api';
+import { useCart } from '../context/CartContext';
 
 const CourseDetails = () => {
     const { id } = useParams();
     const navigate = useNavigate();
     const [course, setCourse] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
+    const { addToCart } = useCart();
+    const [expandedModule, setExpandedModule] = useState(null);
+
+    const toggleModule = (index) => {
+        setExpandedModule(expandedModule === index ? null : index);
+    };
+
+    const handleAddToCart = () => {
+        addToCart(course, pricingMode);
+        // We could add a toast notification here
+    };
 
     useEffect(() => {
         const fetchCourse = async () => {
@@ -29,12 +41,17 @@ const CourseDetails = () => {
         fetchCourse();
     }, [id]);
 
+    const [pricingMode, setPricingMode] = useState('lifetime'); // 'lifetime' or 'subscription'
+
     if (isLoading) return <div className="min-h-screen flex items-center justify-center">Loading...</div>;
     if (!course) return <div className="min-h-screen flex items-center justify-center">Course not found</div>;
 
     const handleSuccess = () => {
         navigate('/success');
     };
+
+    const currentPrice = pricingMode === 'subscription' ? (course.subscriptionPrice || Math.round(course.price * 0.1)) : course.price;
+    const currentPlanName = pricingMode === 'subscription' ? `${course.title} (Monthly)` : course.title;
 
     return (
         <div className="min-h-screen bg-white dark:bg-gray-950">
@@ -53,6 +70,24 @@ const CourseDetails = () => {
                         <p className="text-xl text-gray-600 dark:text-gray-400 mb-8 max-w-2xl">
                             {course.description}
                         </p>
+
+                        {/* What You'll Learn Section */}
+                        {course.learningOutcomes && course.learningOutcomes.length > 0 && (
+                            <div className="mb-12 bg-blue-50 dark:bg-blue-900/10 p-8 rounded-3xl border border-blue-100 dark:border-blue-900/30">
+                                <h3 className="text-xl font-black mb-4 dark:text-white flex items-center gap-2">
+                                    <FiCheckCircle className="text-blue-600" />
+                                    What You'll Learn
+                                </h3>
+                                <div className="grid md:grid-cols-2 gap-4">
+                                    {course.learningOutcomes.map((outcome, index) => (
+                                        <div key={index} className="flex items-start gap-3">
+                                            <div className="mt-1.5 w-1.5 h-1.5 rounded-full bg-blue-500 shrink-0" />
+                                            <p className="text-sm font-medium text-gray-700 dark:text-gray-300">{outcome}</p>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
 
                         <div className="flex flex-wrap gap-8 py-6 border-y border-gray-200 dark:border-gray-800">
                             <div className="flex items-center gap-3">
@@ -85,12 +120,50 @@ const CourseDetails = () => {
                         </div>
 
                         <div className="mt-12">
-                            <h3 className="text-2xl font-black mb-6 dark:text-white">What you'll learn</h3>
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                {course.modules.slice(0, 4).map((mod, i) => (
-                                    <div key={i} className="flex items-start gap-3">
-                                        <FiCheckCircle className="text-blue-600 w-5 h-5 mt-1 shrink-0" />
-                                        <span className="text-gray-700 dark:text-gray-300 font-medium">{mod.title}</span>
+                            <h3 className="text-2xl font-black mb-6 dark:text-white">Course Curriculum</h3>
+                            <div className="space-y-4">
+                                {course.modules.map((mod, i) => (
+                                    <div key={i} className="border border-gray-200 dark:border-gray-800 rounded-2xl overflow-hidden bg-white dark:bg-gray-900">
+                                        <button
+                                            onClick={() => toggleModule(i)}
+                                            className="w-full flex items-center justify-between p-6 text-left hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+                                        >
+                                            <div className="flex items-center gap-4">
+                                                <div className="bg-blue-100 dark:bg-blue-900/30 text-blue-600 w-8 h-8 rounded-lg flex items-center justify-center font-bold text-sm">
+                                                    {i + 1 < 10 ? `0${i + 1}` : i + 1}
+                                                </div>
+                                                <div>
+                                                    <span className="font-bold text-lg dark:text-white block">{mod.title}</span>
+                                                    <div className="flex items-center gap-3 text-xs text-gray-500 mt-1">
+                                                        {mod.instructor && (
+                                                            <span className="font-semibold text-blue-600 bg-blue-50 dark:bg-blue-900/20 px-2 py-0.5 rounded">
+                                                                BY: {mod.instructor}
+                                                            </span>
+                                                        )}
+                                                        {mod.duration && (
+                                                            <span className="flex items-center gap-1">
+                                                                <FiClock size={12} /> {mod.duration} mins
+                                                            </span>
+                                                        )}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <FiChevronRight className={`transform transition-transform ${expandedModule === i ? 'rotate-90' : ''} text-gray-400`} />
+                                        </button>
+
+                                        {expandedModule === i && (
+                                            <div className="px-6 pb-6 border-t border-gray-100 dark:border-gray-800 bg-gray-50 dark:bg-gray-900/50">
+                                                <div className="space-y-3 pt-4">
+                                                    {mod.lessons && mod.lessons.map((lesson, idx) => (
+                                                        <div key={idx} className="flex items-center gap-3 text-sm text-gray-600 dark:text-gray-400">
+                                                            <FiCheckCircle className="text-green-500 w-4 h-4 shrink-0" />
+                                                            <span>{lesson.title}</span>
+                                                            {lesson.duration && <span className="text-xs text-gray-400 ml-auto">{lesson.duration} min</span>}
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            </div>
+                                        )}
                                     </div>
                                 ))}
                             </div>
@@ -104,23 +177,53 @@ const CourseDetails = () => {
                                 <img src={course.thumbnail} alt={course.title} className="w-full h-full object-cover" />
                             </div>
 
+                            {/* Pricing Toggle */}
+                            <div className="flex justify-center mb-6">
+                                <div className="bg-gray-100 dark:bg-gray-800 p-1 rounded-xl flex w-full">
+                                    <button
+                                        onClick={() => setPricingMode('lifetime')}
+                                        className={`flex-1 py-2 rounded-lg text-sm font-bold transition-all ${pricingMode === 'lifetime'
+                                            ? 'bg-white dark:bg-gray-700 shadow-sm text-blue-600'
+                                            : 'text-gray-500'
+                                            }`}
+                                    >
+                                        Lifetime
+                                    </button>
+                                    <button
+                                        onClick={() => setPricingMode('subscription')}
+                                        className={`flex-1 py-2 rounded-lg text-sm font-bold transition-all ${pricingMode === 'subscription'
+                                            ? 'bg-white dark:bg-gray-700 shadow-sm text-blue-600'
+                                            : 'text-gray-500'
+                                            }`}
+                                    >
+                                        Subscription
+                                    </button>
+                                </div>
+                            </div>
+
                             <div className="flex items-end gap-3 mb-8">
-                                <span className="text-4xl font-black dark:text-white">₹{course.price}</span>
-                                {course.oldPrice && (
+                                <span className="text-4xl font-black dark:text-white">₹{currentPrice}</span>
+                                {pricingMode === 'lifetime' && course.oldPrice && (
                                     <span className="text-xl text-gray-400 line-through mb-1">₹{course.oldPrice}</span>
                                 )}
                                 <span className="ml-auto text-blue-600 font-bold bg-blue-50 dark:bg-blue-900/30 px-3 py-1 rounded-full text-xs">
-                                    Special Offer
+                                    {pricingMode === 'subscription' ? '/ month' : 'One-time'}
                                 </span>
                             </div>
 
                             <div className="space-y-4">
                                 <RazorpayPayment
-                                    amount={course.price}
+                                    amount={currentPrice}
                                     courseId={course._id}
-                                    planName={course.title}
+                                    planName={currentPlanName}
                                     onSuccess={handleSuccess}
                                 />
+                                <button
+                                    onClick={handleAddToCart}
+                                    className="w-full py-3 rounded-xl border-2 border-primary-500 text-primary-600 dark:text-primary-400 font-bold hover:bg-primary-50 dark:hover:bg-primary-900/20 transition-all"
+                                >
+                                    Add to Cart
+                                </button>
                                 <p className="text-center text-xs text-gray-400 font-medium">
                                     Secure 256-bit SSL encrypted payment.
                                 </p>
@@ -129,9 +232,11 @@ const CourseDetails = () => {
                             <div className="mt-8 pt-8 border-t border-gray-100 dark:border-gray-800">
                                 <p className="font-bold dark:text-white mb-4">This course includes:</p>
                                 <ul className="space-y-3 text-sm text-gray-600 dark:text-gray-400">
-                                    <li className="flex items-center gap-2">✔ Full lifetime access</li>
+                                    <li className="flex items-center gap-2">✔ Full access to materials</li>
                                     <li className="flex items-center gap-2">✔ Access on mobile and TV</li>
-                                    <li className="flex items-center gap-2">✔ Certificate of completion</li>
+                                    {pricingMode === 'lifetime' && (
+                                        <li className="flex items-center gap-2">✔ Certificate of completion</li>
+                                    )}
                                 </ul>
                             </div>
                         </div>

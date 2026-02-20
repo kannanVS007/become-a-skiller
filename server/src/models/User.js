@@ -32,6 +32,30 @@ const userSchema = new mongoose.Schema({
     },
     resetPasswordToken: String,
     resetPasswordExpire: Date,
+    mobile: {
+        type: String,
+        match: [/^[0-9]{10}$/, 'Please add a valid 10-digit mobile number']
+    },
+    googleId: String,
+    avatar: {
+        type: String,
+        default: 'https://ui-avatars.com/api/?background=random'
+    },
+    bio: String,
+    isBlocked: {
+        type: Boolean,
+        default: false
+    },
+    isDeleted: {
+        type: Boolean,
+        default: false
+    },
+    deletedAt: Date,
+    lastLogin: Date,
+    profileCompletion: {
+        type: Number,
+        default: 0
+    },
     refreshToken: String,
 }, {
     timestamps: true

@@ -8,7 +8,7 @@ import Card from '../components/ui/Card';
 const AboutPage = () => {
     const stats = [
         { label: 'Learners Worldwide', value: '10K+', icon: FiUsers, color: 'text-blue-500' },
-        { label: 'Courses Published', value: '500+', icon: FiLayers, icon: FiLayers, color: 'text-purple-500' },
+        { label: 'Courses Published', value: '500+', icon: FiLayers, color: 'text-purple-500' },
         { label: 'Success Rate', value: '95%', icon: FiTrendingUp, color: 'text-green-500' },
         { label: 'Industry Partners', value: '150+', icon: FiTarget, color: 'text-orange-500' },
     ];

@@ -16,10 +16,13 @@ const CourseCard = ({ course, onAddToCart }) => {
         price,
         oldPrice,
         image,
+        thumbnail,
         duration,
         lessons,
         category
     } = course;
+
+    const displayImage = thumbnail || image || 'https://via.placeholder.com/400x300?text=No+Image';
 
     const discount = oldPrice ? Math.round(((oldPrice - price) / oldPrice) * 100) : 0;
 
@@ -35,7 +38,7 @@ const CourseCard = ({ course, onAddToCart }) => {
                 {/* Image Container */}
                 <Link to={`/courses/${_id || course.id}`} className="relative h-48 mb-4 rounded-2xl overflow-hidden block">
                     <img
-                        src={image}
+                        src={displayImage}
                         alt={title}
                         className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                     />

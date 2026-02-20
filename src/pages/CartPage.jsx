@@ -86,16 +86,25 @@ const CartPage = () => {
                                         className="bg-white dark:bg-gray-900 p-4 rounded-3xl border border-gray-100 dark:border-gray-800 shadow-soft flex gap-6 items-center"
                                     >
                                         <div className="w-24 h-24 rounded-2xl overflow-hidden flex-shrink-0 bg-gray-100 dark:bg-gray-800">
-                                            <img src={item.image || `https://source.unsplash.com/random/200x200?tech,${item.id}`} alt={item.title} className="w-full h-full object-cover" />
+                                            <img src={item.thumbnail || item.image || `https://source.unsplash.com/random/200x200?tech,${item.id}`} alt={item.title} className="w-full h-full object-cover" />
                                         </div>
 
                                         <div className="flex-1 min-w-0">
                                             <h3 className="text-lg font-bold text-gray-900 dark:text-white truncate">{item.title}</h3>
-                                            <p className="text-sm text-gray-500 dark:text-gray-400">By {item.instructor || 'Expert Trainer'}</p>
+                                            <div className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
+                                                <span>By {item.instructor || 'Expert Trainer'}</span>
+                                                <span className="w-1 h-1 rounded-full bg-gray-300 dark:bg-gray-600"></span>
+                                                <span className={`font-bold ${item.pricingMode === 'subscription' ? 'text-purple-500' : 'text-blue-500'}`}>
+                                                    {item.pricingMode === 'subscription' ? 'Subscription' : 'Lifetime Access'}
+                                                </span>
+                                            </div>
                                             <div className="mt-2 flex items-center gap-4">
-                                                <span className="text-lg font-black text-primary-500">${item.price}</span>
-                                                {item.oldPrice && (
-                                                    <span className="text-sm text-gray-400 line-through">${item.oldPrice}</span>
+                                                <span className="text-lg font-black text-primary-500">₹{item.price}</span>
+                                                {item.pricingMode === 'lifetime' && item.oldPrice && (
+                                                    <span className="text-sm text-gray-400 line-through">₹{item.oldPrice}</span>
+                                                )}
+                                                {item.pricingMode === 'subscription' && (
+                                                    <span className="text-xs text-gray-400">/ month</span>
                                                 )}
                                             </div>
                                         </div>
@@ -144,29 +153,29 @@ const CartPage = () => {
                                 <div className="space-y-4 mb-8">
                                     <div className="flex justify-between text-gray-500 dark:text-gray-400">
                                         <span>Subtotal</span>
-                                        <span className="font-bold text-gray-900 dark:text-white">${getSubtotal().toFixed(2)}</span>
+                                        <span className="font-bold text-gray-900 dark:text-white">₹{getSubtotal().toFixed(2)}</span>
                                     </div>
 
                                     {getDiscountAmount() > 0 && (
                                         <div className="flex justify-between text-green-500">
                                             <span>Discount ({couponCode})</span>
-                                            <span className="font-bold">-${getDiscountAmount().toFixed(2)}</span>
+                                            <span className="font-bold">-₹{getDiscountAmount().toFixed(2)}</span>
                                         </div>
                                     )}
 
                                     <div className="flex justify-between text-gray-500 dark:text-gray-400">
                                         <span>Tax (5%)</span>
-                                        <span className="font-bold text-gray-900 dark:text-white">${tax.toFixed(2)}</span>
+                                        <span className="font-bold text-gray-900 dark:text-white">₹{tax.toFixed(2)}</span>
                                     </div>
 
                                     <div className="flex justify-between text-gray-500 dark:text-gray-400">
                                         <span>Platform Fee</span>
-                                        <span className="font-bold text-gray-900 dark:text-white">${platformFee.toFixed(2)}</span>
+                                        <span className="font-bold text-gray-900 dark:text-white">₹{platformFee.toFixed(2)}</span>
                                     </div>
 
                                     <div className="pt-4 border-t border-gray-100 dark:border-gray-800 flex justify-between items-center mt-4">
                                         <span className="text-lg font-bold text-gray-900 dark:text-white">Total</span>
-                                        <span className="text-3xl font-black text-gradient">${finalTotal.toFixed(2)}</span>
+                                        <span className="text-3xl font-black text-gradient">₹{finalTotal.toFixed(2)}</span>
                                     </div>
                                 </div>
 

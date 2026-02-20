@@ -1,53 +1,32 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { FiArrowRight } from 'react-icons/fi';
 import { Link } from 'react-router-dom';
 import CourseCard from './ui/CourseCard';
 import { useCart } from '../context/CartContext';
+import api from '../services/api';
 
 const Courses = () => {
     const { addToCart } = useCart();
+    const [featuredCourses, setFeaturedCourses] = useState([]);
+    const [isLoading, setIsLoading] = useState(true);
 
-    const featuredCourses = [
-        {
-            id: 1,
-            title: 'Mastering Advanced React with Framer Motion',
-            instructor: 'Aura Skiller',
-            instructorAvatar: 'https://ui-avatars.com/api/?name=Aura+Skiller&background=00A8E8&color=fff',
-            rating: 4.9,
-            price: 89,
-            oldPrice: 129,
-            image: 'https://images.unsplash.com/photo-1633356122544-f134324a6cee?w=800&auto=format&fit=crop',
-            duration: '12h 45m',
-            lessons: 48,
-            category: 'Web Development'
-        },
-        {
-            id: 2,
-            title: 'Full-Stack Enterprise Node.js Architecture',
-            instructor: 'Dr. Dev',
-            instructorAvatar: 'https://ui-avatars.com/api/?name=Dr+Dev&background=2563EB&color=fff',
-            rating: 4.8,
-            price: 119,
-            oldPrice: 199,
-            image: 'https://images.unsplash.com/photo-1542831371-29b0f74f9713?w=800&auto=format&fit=crop',
-            duration: '18h 30m',
-            lessons: 64,
-            category: 'Web Development'
-        },
-        {
-            id: 3,
-            title: 'Psychology of Modern UI/UX Product Design',
-            instructor: 'Sarah Design',
-            instructorAvatar: 'https://ui-avatars.com/api/?name=Sarah+Design&background=7B68EE&color=fff',
-            rating: 4.9,
-            price: 75,
-            image: 'https://images.unsplash.com/photo-1561070791-2526d30994b5?w=800&auto=format&fit=crop',
-            duration: '10h 15m',
-            lessons: 32,
-            category: 'UI/UX Design'
-        }
-    ];
+    useEffect(() => {
+        const fetchCourses = async () => {
+            try {
+                const { data } = await api.get('/courses');
+                if (data.success) {
+                    // Get top 3 courses (or whatever criteria for "featured")
+                    setFeaturedCourses(data.data.slice(0, 3));
+                }
+            } catch (err) {
+                console.error('Failed to fetch featured courses', err);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+        fetchCourses();
+    }, []);
 
     return (
         <section className="py-32 px-4 bg-white dark:bg-gray-950">
@@ -84,16 +63,26 @@ const Courses = () => {
                     </motion.div>
                 </div>
 
-                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    {featuredCourses.map((course, idx) => (
-                        <div key={course.id}>
-                            <CourseCard
-                                course={course}
-                                onAddToCart={addToCart}
-                            />
-                        </div>
-                    ))}
-                </div>
+                {isLoading ? (
+                    <div className="flex justify-center py-20">
+                        <div className="animate-spin rounded-full h-12 w-12 border-4 border-blue-600 border-t-transparent"></div>
+                    </div>
+                ) : (
+                    <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                        {featuredCourses.length > 0 ? (
+                            featuredCourses.map((course) => (
+                                <div key={course._id}>
+                                    <CourseCard
+                                        course={course}
+                                        onAddToCart={addToCart}
+                                    />
+                                </div>
+                            ))
+                        ) : (
+                            <p className="text-center w-full text-gray-500">No featured courses available.</p>
+                        )}
+                    </div>
+                )}
             </div>
         </section>
     );

@@ -15,9 +15,23 @@ const enrollmentSchema = new mongoose.Schema({
         completedModules: [String], // Array of module IDs
         percentage: { type: Number, default: 0 }
     },
+    quizScores: [{
+        quizId: { type: mongoose.Schema.ObjectId, ref: 'Quiz' },
+        score: Number,
+        passed: Boolean,
+        completedAt: { type: Date, default: Date.now }
+    }],
+    certificationId: { type: String, unique: true, sparse: true },
+
+    enrollmentType: {
+        type: String,
+        enum: ['lifetime', 'subscription'],
+        default: 'lifetime'
+    },
+    expiresAt: Date,
     status: {
         type: String,
-        enum: ['active', 'completed', 'dropped'],
+        enum: ['active', 'completed', 'dropped', 'expired'],
         default: 'active'
     }
 }, {

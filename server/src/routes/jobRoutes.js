@@ -8,7 +8,7 @@ router.get('/', getJobs);
 
 // Authenticated routes
 router.post('/', protect, authorize('trainer', 'admin'), createJob);
-router.post('/:id/apply', protect, authorize('student'), applyForJob);
+router.post('/:id/apply', protect, authorize('student', 'admin'), applyForJob);
 router.get('/:id/applications', protect, authorize('trainer', 'admin'), getJobApplications);
 
 export default router;

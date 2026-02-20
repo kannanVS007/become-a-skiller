@@ -32,18 +32,32 @@ export const CartProvider = ({ children }) => {
         localStorage.setItem('cart', JSON.stringify(cartItems));
     }, [cartItems]);
 
-    const addToCart = (course) => {
+    const addToCart = (course, pricingMode = 'lifetime') => {
         setCartItems((prev) => {
-            const exists = prev.find((item) => item.id === course.id);
-            if (exists) {
-                return prev;
+            const courseId = course._id || course.id;
+            const existingItemIndex = prev.findIndex((item) => (item._id || item.id) === courseId);
+
+            const price = pricingMode === 'subscription' ? course.subscriptionPrice : course.price;
+            const itemToAdd = {
+                ...course,
+                id: courseId,
+                pricingMode,
+                price
+            };
+
+            if (existingItemIndex > -1) {
+                // Update existing item with new mode/price
+                const newCart = [...prev];
+                newCart[existingItemIndex] = itemToAdd;
+                return newCart;
             }
-            return [...prev, course];
+
+            return [...prev, itemToAdd];
         });
     };
 
     const removeFromCart = (courseId) => {
-        setCartItems((prev) => prev.filter((item) => item.id !== courseId));
+        setCartItems((prev) => prev.filter((item) => (item._id || item.id) !== courseId));
     };
 
     const clearCart = () => {

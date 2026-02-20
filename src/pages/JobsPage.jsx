@@ -16,7 +16,7 @@ const JobsPage = () => {
             try {
                 const { data } = await api.get('/jobs');
                 if (data.success) {
-                    setJobs(data.jobs);
+                    setJobs(data.data);
                 }
             } catch (err) {
                 console.error('Error fetching jobs:', err);

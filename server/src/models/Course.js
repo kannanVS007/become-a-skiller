@@ -6,6 +6,7 @@ const moduleSchema = new mongoose.Schema({
     videoUrl: String,
     pdfUrl: String,
     duration: Number, // in minutes
+    instructor: String // Specific instructor for this module (overrides course trainer)
 });
 
 const courseSchema = new mongoose.Schema({
@@ -18,6 +19,7 @@ const courseSchema = new mongoose.Schema({
         type: String,
         required: [true, 'Please add a description']
     },
+    learningOutcomes: [String], // Array of strings describing what you'll learn
     category: {
         type: String,
         required: [true, 'Please add a category']
@@ -30,12 +32,26 @@ const courseSchema = new mongoose.Schema({
         type: Number,
         default: 0
     },
+    subscriptionPrice: {
+        type: Number,
+        default: 0
+    },
     trainer: {
         type: mongoose.Schema.ObjectId,
         ref: 'User',
         required: true
     },
-    modules: [moduleSchema],
+    modules: [{
+        title: { type: String, required: true },
+        duration: Number, // Module duration
+        lessons: [{
+            title: { type: String, required: true },
+            videoUrl: String,
+            content: String,
+            duration: Number,
+            isFree: { type: Boolean, default: false }
+        }]
+    }],
     ratings: {
         average: { type: Number, default: 0 },
         count: { type: Number, default: 0 }

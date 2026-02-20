@@ -34,13 +34,15 @@ import jobRoutes from './routes/jobRoutes.js';
 import paymentRoutes from './routes/paymentRoutes.js';
 import adminRoutes from './routes/adminRoutes.js';
 import userRoutes from './routes/userRoutes.js';
+import quizRoutes from './routes/quizRoutes.js';
 
 app.use('/api/v1/auth', authRoutes);
-app.use('/api/v1/user', userRoutes);
+app.use('/api/v1/users', userRoutes);
 app.use('/api/v1/courses', courseRoutes);
 app.use('/api/v1/jobs', jobRoutes);
 app.use('/api/v1/payments', paymentRoutes);
 app.use('/api/v1/admin', adminRoutes);
+app.use('/api/v1/quiz', quizRoutes);
 
 // Basic Route
 app.get('/', (req, res) => {

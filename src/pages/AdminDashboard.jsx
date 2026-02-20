@@ -8,12 +8,55 @@ import {
 import DashboardLayout from '../components/dashboard/DashboardLayout';
 import Card from '../components/ui/Card';
 
+import api from '../services/api';
+
 const AdminDashboard = () => {
+    const [statsData, setStatsData] = useState(null);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchStats = async () => {
+            try {
+                const { data } = await api.get('/admin/stats');
+                setStatsData(data.data);
+            } catch (error) {
+                console.error('Error fetching admin stats:', error);
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchStats();
+    }, []);
+
     const stats = [
-        { label: 'Total Revenue', value: '$84,250', trend: '+24.5%', icon: FiDollarSign, color: 'from-blue-500 to-cyan-400' },
-        { label: 'Platform Users', value: '12,854', trend: '+18.2%', icon: FiUsers, color: 'from-purple-500 to-pink-500' },
-        { label: 'Active Courses', value: '482', trend: '+5.1%', icon: FiBook, color: 'from-emerald-400 to-teal-500' },
-        { label: 'Live Sessions', value: '1,205', trend: '+12.3%', icon: FiActivity, color: 'from-amber-400 to-orange-500' },
+        {
+            label: 'Total Revenue',
+            value: statsData ? `₹${statsData.financial.revenue.toLocaleString()}` : '...',
+            trend: '+12.5%',
+            icon: FiDollarSign,
+            color: 'from-blue-500 to-cyan-400'
+        },
+        {
+            label: 'Total Users',
+            value: statsData ? statsData.users.total.toLocaleString() : '...',
+            trend: `+${statsData ? statsData.users.active : 0} Active`,
+            icon: FiUsers,
+            color: 'from-purple-500 to-pink-500'
+        },
+        {
+            label: 'Total Courses',
+            value: statsData ? statsData.content.courses : '...',
+            trend: '+2 New',
+            icon: FiBook,
+            color: 'from-emerald-400 to-teal-500'
+        },
+        {
+            label: 'Learning Hours',
+            value: statsData ? statsData.learning.totalHours.toLocaleString() : '...',
+            trend: '+15.3%',
+            icon: FiActivity,
+            color: 'from-amber-400 to-orange-500'
+        },
     ];
 
     return (
@@ -192,9 +235,9 @@ const AdminDashboard = () => {
 
                             <div className="space-y-4 w-full">
                                 {[
-                                    { label: 'Candidates', value: '62%', color: 'bg-primary-500' },
-                                    { label: 'Trainers', value: '28%', color: 'bg-purple-500' },
-                                    { label: 'Enterprise', value: '10%', color: 'bg-emerald-500' }
+                                    { label: 'Students', value: statsData ? `${Math.round((statsData.users.students / statsData.users.total) * 100)}%` : '...', color: 'bg-primary-500' },
+                                    { label: 'Trainers', value: statsData ? `${Math.round((statsData.users.trainers / statsData.users.total) * 100)}%` : '...', color: 'bg-purple-500' },
+                                    { label: 'Blocked', value: statsData ? `${Math.round(((statsData.users.total - statsData.users.active) / statsData.users.total) * 100)}%` : '...', color: 'bg-red-500' }
                                 ].map(item => (
                                     <div key={item.label} className="flex items-center justify-between">
                                         <div className="flex items-center gap-3">
@@ -232,40 +275,34 @@ const AdminDashboard = () => {
                                         </tr>
                                     </thead>
                                     <tbody className="divide-y divide-white/5">
-                                        {[
-                                            { name: 'Sarah Connor', email: 'sarah@resistance.ai', role: 'Elite Candidate', status: 'Active', color: 'text-emerald-400' },
-                                            { name: 'Nexus 6', email: 'nexus@tyrell.corp', role: 'Premium Trainer', status: 'Verification', color: 'text-amber-400' },
-                                            { name: 'Bruce Wayne', email: 'bruce@wayne-ent.com', role: 'Enterprise Admin', status: 'High Threat', color: 'text-red-400' },
-                                        ].map((user, i) => (
-                                            <tr key={i} className="hover:bg-white/[0.02] transition-colors group">
+                                        {statsData && statsData.recentPayments.map((payment, i) => (
+                                            <tr key={payment._id || i} className="hover:bg-white/[0.02] transition-colors group">
                                                 <td className="px-10 py-6">
                                                     <div className="flex items-center gap-4">
                                                         <div className="w-12 h-12 rounded-2xl bg-gradient-primary p-[1px]">
-                                                            <div className="w-full h-full bg-gray-950 rounded-[15px] flex items-center justify-center font-black text-white">
-                                                                {user.name.charAt(0)}
+                                                            <div className="w-full h-full bg-gray-950 rounded-[15px] flex items-center justify-center font-black text-white uppercase">
+                                                                {payment.user?.name?.charAt(0) || 'U'}
                                                             </div>
                                                         </div>
                                                         <div>
-                                                            <p className="text-sm font-black text-white group-hover:text-primary-400 transition-colors">{user.name}</p>
-                                                            <p className="text-[10px] text-gray-500 font-medium">{user.email}</p>
+                                                            <p className="text-sm font-black text-white group-hover:text-primary-400 transition-colors">{payment.user?.name || 'Unknown User'}</p>
+                                                            <p className="text-[10px] text-gray-500 font-medium">{payment.user?.email}</p>
                                                         </div>
                                                     </div>
                                                 </td>
                                                 <td className="px-10 py-6">
                                                     <span className="text-[10px] font-black uppercase tracking-widest bg-white/5 px-3 py-1.5 rounded-lg text-gray-400">
-                                                        {user.role}
+                                                        {payment.courseId ? 'Course Purchase' : 'Subscription'}
                                                     </span>
                                                 </td>
                                                 <td className="px-10 py-6">
                                                     <div className="flex items-center gap-2">
-                                                        <div className={`w-1.5 h-1.5 rounded-full bg-current ${user.color}`} />
-                                                        <span className={`text-[10px] font-black uppercase tracking-widest ${user.color}`}>{user.status}</span>
+                                                        <div className={`w-1.5 h-1.5 rounded-full bg-current text-emerald-400`} />
+                                                        <span className={`text-[10px] font-black uppercase tracking-widest text-emerald-400`}>{payment.status}</span>
                                                     </div>
                                                 </td>
                                                 <td className="px-10 py-6 text-right">
-                                                    <button className="w-10 h-10 rounded-xl hover:bg-white/10 flex items-center justify-center transition-all">
-                                                        <FiMoreVertical className="text-gray-500" />
-                                                    </button>
+                                                    <span className="text-sm font-black text-white">₹{payment.amount}</span>
                                                 </td>
                                             </tr>
                                         ))}

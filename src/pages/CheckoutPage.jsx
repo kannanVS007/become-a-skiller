@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FiCreditCard, FiLock, FiCheck, FiArrowLeft, FiArrowRight, FiInfo } from 'react-icons/fi';
 import { FaCcStripe, FaPaypal, FaBitcoin } from 'react-icons/fa';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, Navigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';

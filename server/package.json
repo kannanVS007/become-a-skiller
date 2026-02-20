@@ -1,8 +1,16 @@
 {
   "name": "server",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "src/index.js",
+  "type": "module",
   "scripts": {
+    "start": "node src/index.js",
+    "dev": "node --watch src/index.js",
+    "seed:admin": "node src/scripts/seedAdmin.js",
+    "seed:courses": "node src/scripts/seedCourses.js",
+    "seed:jobs": "node src/scripts/seedJobs.js",
+    "seed:quizzes": "node src/scripts/seedQuizzes.js",
+    "seed:users": "node src/scripts/seedUsers.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -19,7 +27,7 @@
     "express-rate-limit": "^8.2.1",
     "helmet": "^8.1.0",
     "jsonwebtoken": "^9.0.3",
-    "mongoose": "^9.2.1",
+    "mongoose": "^8.23.0",
     "morgan": "^1.10.1",
     "multer": "^2.0.2",
     "nodemailer": "^8.0.1",
