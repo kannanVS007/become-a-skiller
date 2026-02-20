@@ -38,7 +38,7 @@ const seedUsers = async () => {
         // 1. Create Admin
         users.push({
             name: 'Super Admin',
-            email: 'admin@becomeskiller.com',
+            email: 'vskannan4135@gmail.com',
             password: adminHashedPassword, // Updated password
             role: 'admin',
             mobile: '6379524135',
@@ -52,7 +52,7 @@ const seedUsers = async () => {
         for (let i = 0; i < 5; i++) {
             users.push({
                 name: `${firstNames[i]} ${lastNames[i]} (Trainer)`,
-                email: `trainer${i + 1}@becomeskiller.com`,
+                email: `trainer${i + 1}@test.com`,
                 password: hashedPassword,
                 role: 'trainer',
                 mobile: generateMobile(),

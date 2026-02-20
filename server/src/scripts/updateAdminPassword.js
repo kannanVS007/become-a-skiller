@@ -9,7 +9,7 @@ const updateAdminPassword = async () => {
     try {
         await connectDB();
 
-        const adminEmail = 'admin@becomeskiller.com';
+        const adminEmail = 'vskannan4135@gmail.com';
         const newPassword = 'skiller2026';
 
         const user = await User.findOne({ email: adminEmail });

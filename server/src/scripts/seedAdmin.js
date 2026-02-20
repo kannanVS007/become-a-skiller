@@ -3,7 +3,7 @@
  * Run: node src/scripts/seedAdmin.js   (from the /server directory)
  *
  * Creates an admin user:
- *   Email:    admin@becomeskiller.com
+ *   Email:    vskannan4135@gmail.com
  *   Password: Admin@1234
  */
 import mongoose from 'mongoose';
