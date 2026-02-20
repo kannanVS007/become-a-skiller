@@ -107,7 +107,7 @@ const RouteTransition = ({ children }) => {
     );
 };
 
-const GOOGLE_CLIENT_ID = "6379524135-placeholder.apps.googleusercontent.com";
+const GOOGLE_CLIENT_ID = "362799383714-bq9pi8np8l288pv0c4rqmvl4ta59o6dt.apps.googleusercontent.com";
 
 function App() {
     return (
