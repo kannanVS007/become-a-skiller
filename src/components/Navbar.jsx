@@ -143,24 +143,24 @@ const Navbar = () => {
 
                         {/* Auth Buttons / Profile */}
                         {isAuthenticated ? (
-                            <div className="relative hidden lg:block" ref={profileRef}>
+                            <div className="relative" ref={profileRef}>
                                 <button
                                     onClick={() => setIsProfileOpen(!isProfileOpen)}
-                                    className="flex items-center gap-3 p-1.5 pr-4 rounded-full bg-gray-50 dark:bg-gray-800/50 hover:bg-gray-100 dark:hover:bg-gray-800 transition-all border border-gray-100 dark:border-white/5"
+                                    className="flex items-center gap-2 lg:gap-3 p-1 lg:p-1.5 lg:pr-4 rounded-full bg-gray-50 dark:bg-gray-800/50 hover:bg-gray-100 dark:hover:bg-gray-800 transition-all border border-gray-100 dark:border-white/5"
                                 >
                                     <div className="relative">
                                         <img
-                                            src={user?.avatar || 'https://ui-avatars.com/api/?name=User&background=00A8E8&color=fff'}
+                                            src={user?.avatar || `https://ui-avatars.com/api/?name=${user?.name || 'User'}&background=00A8E8&color=fff`}
                                             alt={user?.name}
-                                            className="w-9 h-9 rounded-full border-2 border-primary-500"
+                                            className="w-8 h-8 lg:w-9 lg:h-9 rounded-full border-2 border-primary-500"
                                         />
-                                        <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-green-500 border-2 border-white dark:border-gray-950 rounded-full"></div>
+                                        <div className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 lg:w-3 lg:h-3 bg-green-500 border-2 border-white dark:border-gray-950 rounded-full"></div>
                                     </div>
-                                    <div className="text-left leading-none">
-                                        <p className="text-xs font-black text-gray-900 dark:text-white uppercase tracking-tighter">
+                                    <div className="text-left leading-none hidden sm:block lg:block">
+                                        <p className="text-[10px] lg:text-xs font-black text-gray-900 dark:text-white uppercase tracking-tighter">
                                             {user?.name?.split(' ')[0]}
                                         </p>
-                                        <p className="text-[10px] font-bold text-gray-400 mt-0.5">Verified</p>
+                                        <p className="text-[9px] lg:text-[10px] font-bold text-gray-400 mt-0.5">Verified</p>
                                     </div>
                                 </button>
                                 <ProfileDropdown
@@ -227,9 +227,9 @@ const Navbar = () => {
                                     <div className="space-y-3">
                                         <div className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-800 rounded-xl">
                                             <img
-                                                src={user?.avatar}
+                                                src={user?.avatar || `https://ui-avatars.com/api/?name=${user?.name || 'User'}&background=00A8E8&color=fff`}
                                                 alt={user?.name}
-                                                className="w-10 h-10 rounded-full"
+                                                className="w-10 h-10 rounded-full border-2 border-primary-500"
                                             />
                                             <div>
                                                 <p className="font-semibold text-gray-900 dark:text-white">

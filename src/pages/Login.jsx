@@ -4,6 +4,8 @@ import { FiMail, FiLock, FiArrowRight } from 'react-icons/fi';
 import { FcGoogle } from 'react-icons/fc';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { useGoogleLogin } from '@react-oauth/google';
+import toast from 'react-hot-toast';
 import Input from '../components/ui/Input';
 import Button from '../components/ui/Button';
 import api from '../services/api';
@@ -18,6 +20,43 @@ const Login = () => {
     });
     const [errors, setErrors] = useState({});
     const [isLoading, setIsLoading] = useState(false);
+
+    const [googleLoading, setGoogleLoading] = useState(false);
+
+    const handleGoogleLogin = useGoogleLogin({
+        onSuccess: async (tokenResponse) => {
+            setGoogleLoading(true);
+            try {
+                // We need the ID token, but useGoogleLogin by default gives an access token.
+                // However, our backend can also accept access token if we use google-auth-library properly.
+                // For simplicity and standard, we'll try to get the ID token if available or handle access token.
+                // Actually, react-oauth/google's useGoogleLogin returns an access token by default.
+                // Let's use the explicit GoogleLogin component for ID token or fetch user info from backend.
+                // BUT, to keep it "button-native" looking, we'll fetch user info manually or update backend.
+
+                // Let's send the access token to backend and let backend fetch the profile.
+                const { data } = await api.post('/auth/google-login', {
+                    accessToken: tokenResponse.access_token
+                });
+
+                if (data.success) {
+                    login(data.user, data.token, data.refreshToken);
+                    toast.success('Login successful!');
+                    if (!data.user.mobile) {
+                        navigate('/complete-profile');
+                    } else {
+                        navigate('/dashboard');
+                    }
+                }
+            } catch (err) {
+                console.error(err);
+                toast.error(err.response?.data?.message || 'Google Login failed');
+            } finally {
+                setGoogleLoading(false);
+            }
+        },
+        onError: () => toast.error('Google Login failed'),
+    });
 
     const handleChange = (field, value) => {
         setFormData((prev) => ({ ...prev, [field]: value }));
@@ -166,10 +205,12 @@ const Login = () => {
 
                         <button
                             type="button"
-                            className="w-full flex items-center justify-center gap-3 px-4 py-4 bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 rounded-2xl transition-all font-bold border border-gray-200 dark:border-gray-700 shadow-soft"
+                            onClick={() => handleGoogleLogin()}
+                            disabled={googleLoading}
+                            className={`w-full flex items-center justify-center gap-3 px-4 py-4 bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 rounded-2xl transition-all font-bold border border-gray-200 dark:border-gray-700 shadow-soft ${googleLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
                         >
                             <FcGoogle className="w-6 h-6" />
-                            <span>Continue with Google</span>
+                            <span>{googleLoading ? 'Connecting...' : 'Continue with Google'}</span>
                         </button>
                     </form>
 

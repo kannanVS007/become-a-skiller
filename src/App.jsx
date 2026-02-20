@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { ThemeProvider } from './context/ThemeContext';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { CartProvider } from './context/CartContext';
+import { GoogleOAuthProvider } from '@react-oauth/google';
 
 // Layout Components
 import Navbar from './components/Navbar';
@@ -106,83 +107,87 @@ const RouteTransition = ({ children }) => {
     );
 };
 
+const GOOGLE_CLIENT_ID = "6379524135-placeholder.apps.googleusercontent.com";
+
 function App() {
     return (
-        <ThemeProvider>
-            <AuthProvider>
-                <CartProvider>
-                    <Router>
-                        <div className="min-h-screen bg-white dark:bg-gray-950 text-gray-900 dark:text-white transition-colors overflow-x-hidden">
-                            <Routes>
-                                {/* Public Routes */}
-                                <Route path="/" element={<Home />} />
-                                <Route path="/about" element={<RouteTransition><AboutPage /></RouteTransition>} />
-                                <Route path="/courses" element={<RouteTransition><CoursesPage /></RouteTransition>} />
-                                <Route path="/courses/:id" element={<RouteTransition><CourseDetails /></RouteTransition>} />
-                                <Route path="/blog" element={<RouteTransition><BlogPage /></RouteTransition>} />
-                                <Route path="/contact" element={<RouteTransition><ContactPage /></RouteTransition>} />
-                                <Route path="/jobs" element={<RouteTransition><JobsPage /></RouteTransition>} />
-                                <Route path="/login" element={<RouteTransition><Login /></RouteTransition>} />
-                                <Route path="/signup" element={<RouteTransition><SignUp /></RouteTransition>} />
-                                <Route path="/forgot-password" element={<ForgotPassword />} />
-                                <Route path="/cart" element={<RouteTransition><CartPage /></RouteTransition>} />
-                                <Route path="/checkout" element={<RouteTransition><CheckoutPage /></RouteTransition>} />
-                                <Route path="/success" element={<SuccessPage />} />
-                                <Route
-                                    path="/complete-profile"
-                                    element={
-                                        <ProtectedRoute>
-                                            <RouteTransition><CompleteProfile /></RouteTransition>
-                                        </ProtectedRoute>
-                                    }
-                                />
+        <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
+            <ThemeProvider>
+                <AuthProvider>
+                    <CartProvider>
+                        <Router>
+                            <div className="min-h-screen bg-white dark:bg-gray-950 text-gray-900 dark:text-white transition-colors overflow-x-hidden">
+                                <Routes>
+                                    {/* Public Routes */}
+                                    <Route path="/" element={<Home />} />
+                                    <Route path="/about" element={<RouteTransition><AboutPage /></RouteTransition>} />
+                                    <Route path="/courses" element={<RouteTransition><CoursesPage /></RouteTransition>} />
+                                    <Route path="/courses/:id" element={<RouteTransition><CourseDetails /></RouteTransition>} />
+                                    <Route path="/blog" element={<RouteTransition><BlogPage /></RouteTransition>} />
+                                    <Route path="/contact" element={<RouteTransition><ContactPage /></RouteTransition>} />
+                                    <Route path="/jobs" element={<RouteTransition><JobsPage /></RouteTransition>} />
+                                    <Route path="/login" element={<RouteTransition><Login /></RouteTransition>} />
+                                    <Route path="/signup" element={<RouteTransition><SignUp /></RouteTransition>} />
+                                    <Route path="/forgot-password" element={<ForgotPassword />} />
+                                    <Route path="/cart" element={<RouteTransition><CartPage /></RouteTransition>} />
+                                    <Route path="/checkout" element={<RouteTransition><CheckoutPage /></RouteTransition>} />
+                                    <Route path="/success" element={<SuccessPage />} />
+                                    <Route
+                                        path="/complete-profile"
+                                        element={
+                                            <ProtectedRoute>
+                                                <RouteTransition><CompleteProfile /></RouteTransition>
+                                            </ProtectedRoute>
+                                        }
+                                    />
 
-                                {/* Protected Routes */}
-                                <Route
-                                    path="/dashboard/users"
-                                    element={
-                                        <ProtectedRoute roles={['admin']}>
-                                            <RouteTransition>
-                                                <UserManagement />
-                                            </RouteTransition>
-                                        </ProtectedRoute>
-                                    }
-                                />
-                                <Route
-                                    path="/dashboard/*"
-                                    element={
-                                        <ProtectedRoute>
-                                            <RouteTransition>
-                                                <DashboardPage />
-                                            </RouteTransition>
-                                        </ProtectedRoute>
-                                    }
-                                />
-                                <Route
-                                    path="/trainer/create-course"
-                                    element={
-                                        <ProtectedRoute roles={['trainer', 'admin']}>
-                                            <RouteTransition><CreateCourse /></RouteTransition>
-                                        </ProtectedRoute>
-                                    }
-                                />
-                                <Route
-                                    path="/trainer/create-job"
-                                    element={
-                                        <ProtectedRoute roles={['trainer', 'admin']}>
-                                            <RouteTransition><CreateJob /></RouteTransition>
-                                        </ProtectedRoute>
-                                    }
-                                />
+                                    {/* Protected Routes */}
+                                    <Route
+                                        path="/dashboard/users"
+                                        element={
+                                            <ProtectedRoute roles={['admin']}>
+                                                <RouteTransition>
+                                                    <UserManagement />
+                                                </RouteTransition>
+                                            </ProtectedRoute>
+                                        }
+                                    />
+                                    <Route
+                                        path="/dashboard/*"
+                                        element={
+                                            <ProtectedRoute>
+                                                <RouteTransition>
+                                                    <DashboardPage />
+                                                </RouteTransition>
+                                            </ProtectedRoute>
+                                        }
+                                    />
+                                    <Route
+                                        path="/trainer/create-course"
+                                        element={
+                                            <ProtectedRoute roles={['trainer', 'admin']}>
+                                                <RouteTransition><CreateCourse /></RouteTransition>
+                                            </ProtectedRoute>
+                                        }
+                                    />
+                                    <Route
+                                        path="/trainer/create-job"
+                                        element={
+                                            <ProtectedRoute roles={['trainer', 'admin']}>
+                                                <RouteTransition><CreateJob /></RouteTransition>
+                                            </ProtectedRoute>
+                                        }
+                                    />
 
-                                {/* Catch all - redirect to home */}
-                                <Route path="*" element={<Navigate to="/" />} />
-                            </Routes>
-                        </div>
-                    </Router>
-                </CartProvider>
-            </AuthProvider>
-        </ThemeProvider>
+                                    {/* Catch all - redirect to home */}
+                                    <Route path="*" element={<Navigate to="/" />} />
+                                </Routes>
+                            </div>
+                        </Router>
+                    </CartProvider>
+                </AuthProvider>
+            </ThemeProvider>
+        </GoogleOAuthProvider>
     );
 }
 

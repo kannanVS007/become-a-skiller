@@ -1,8 +1,12 @@
 import User from '../models/User.js';
 import jwt from 'jsonwebtoken';
 import crypto from 'crypto';
+import axios from 'axios';
 import sendEmail from '../services/emailService.js';
 import { getWelcomeEmailHtml } from '../services/welcomeEmailTemplate.js';
+import { OAuth2Client } from 'google-auth-library';
+
+const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
 // Generate Token
 const generateToken = (id) => {
@@ -127,6 +131,66 @@ export const refresh = async (req, res, next) => {
         });
     } catch (err) {
         res.status(401).json({ message: 'Invalid refresh token' });
+    }
+};
+
+// @desc    Google Login
+// @route   POST /api/v1/auth/google-login
+// @access  Public
+export const googleLogin = async (req, res, next) => {
+    try {
+        const { idToken, accessToken } = req.body;
+        let email, name, picture, googleId;
+
+        if (idToken) {
+            // Verify Google ID token
+            const ticket = await client.verifyIdToken({
+                idToken,
+                audience: process.env.GOOGLE_CLIENT_ID,
+            });
+            const payload = ticket.getPayload();
+            email = payload.email;
+            name = payload.name;
+            picture = payload.picture;
+            googleId = payload.sub;
+        } else if (accessToken) {
+            // Fetch user info using Access token
+            const response = await axios.get(`https://www.googleapis.com/oauth2/v3/userinfo?access_token=${accessToken}`);
+            email = response.data.email;
+            name = response.data.name;
+            picture = response.data.picture;
+            googleId = response.data.sub;
+        } else {
+            return res.status(400).json({ success: false, message: 'Google Token is required' });
+        }
+
+        // Check if user exists
+        let user = await User.findOne({ email });
+
+        if (!user) {
+            // Create user if not exists
+            user = await User.create({
+                name,
+                email,
+                password: crypto.randomBytes(16).toString('hex'), // Random password for Google users
+                role: 'student',
+                avatar: picture,
+                googleId,
+                isEmailVerified: true // Google emails are already verified
+            });
+
+            // Fire welcome email asynchronously
+            sendWelcomeEmail(user);
+        }
+
+        // Update lastLogin
+        user.lastLogin = new Date();
+        await user.save({ validateBeforeSave: false });
+
+        sendTokenResponse(user, 200, res);
+    } catch (err) {
+        console.error('Google Login Error:', err.message);
+        res.status(401).json({ success: false, message: 'Google authentication failed' });
     }
 };
 
