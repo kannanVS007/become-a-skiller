@@ -77,7 +77,7 @@ const seedCourses = async () => {
             {
                 title: 'AI & Machine Learning Specialist',
                 description: 'Dive into the world of Artificial Intelligence. Learn Python, TensorFlow, and Neural Networks to build smart applications.',
-                category: 'Data Science',
+                category: 'AI & Machine Learning',
                 price: 2999,
                 subscriptionPrice: 299,
                 trainer: adminUser._id,
