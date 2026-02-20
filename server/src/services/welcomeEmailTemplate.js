@@ -1,105 +1,196 @@
-/**
- * Generates the HTML for the welcome email.
- * @param {string} name - The user's first/full name
- * @returns {string} - Full HTML string
- */
 export const getWelcomeEmailHtml = (name) => {
-  const firstName = name?.split(' ')[0] || name || 'there';
-  const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
+    const firstName = name?.split(' ')[0] || name || 'there';
+    const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
 
-  return `
+    // Note: For logos to be visible in all email clients, the image must be hosted on a public URL.
+    // During local development (localhost), the logo will appear as a broken image in most clients.
+    const logoUrl = frontendUrl.includes('localhost')
+        ? 'https://raw.githubusercontent.com/kannanVS007/become-a-skiller/main/public/img/logo.png' // Fallback to a potential GitHub path or similar if available
+        : `${frontendUrl}/img/logo.png`;
+
+    return `
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Welcome to Become A Skiller</title>
+    <!--[if mso]>
+    <noscript>
+        <xml>
+            <o:OfficeDocumentSettings>
+                <o:PixelsPerInch>96</o:PixelsPerInch>
+            </o:OfficeDocumentSettings>
+        </xml>
+    </noscript>
+    <![endif]-->
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800&display=swap');
+        
+        body {
+            background-color: #f1f5f9;
+            font-family: 'Outfit', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            -webkit-font-smoothing: antialiased;
+        }
+        .container {
+            max-width: 600px;
+            margin: 40px auto;
+            background-color: #ffffff;
+            border-radius: 24px;
+            overflow: hidden;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+        }
+        .header {
+            background: linear-gradient(135deg, #1e40af 0%, #1e3a8a 100%);
+            padding: 60px 40px;
+            text-align: center;
+        }
+        .logo {
+            width: 220px;
+            height: auto;
+            filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1));
+        }
+        .content {
+            padding: 50px 40px;
+            color: #1e293b;
+        }
+        .greeting {
+            font-size: 32px;
+            font-weight: 800;
+            color: #0f172a;
+            margin: 0 0 20px;
+            letter-spacing: -0.02em;
+        }
+        .text {
+            font-size: 18px;
+            line-height: 1.7;
+            color: #475569;
+            margin-bottom: 30px;
+        }
+        .feature-card {
+            background-color: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 20px;
+            padding: 24px;
+            margin-bottom: 20px;
+            transition: transform 0.2s ease;
+        }
+        .feature-title {
+            display: block;
+            font-size: 18px;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 8px;
+        }
+        .feature-desc {
+            font-size: 15px;
+            color: #64748b;
+            line-height: 1.5;
+        }
+        .cta-button {
+            display: inline-block;
+            background-color: #2563eb;
+            color: #ffffff !important;
+            padding: 18px 40px;
+            border-radius: 14px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 18px;
+            margin-top: 20px;
+            box-shadow: 0 10px 15px -3px rgba(37, 99, 235, 0.3);
+        }
+        .footer {
+            background-color: #0f172a;
+            padding: 40px;
+            text-align: center;
+            color: #94a3b8;
+        }
+        .quote-box {
+            margin-top: 40px;
+            padding-top: 30px;
+            border-top: 1px solid #e2e8f0;
+            text-align: center;
+        }
+        .quote {
+            font-size: 20px;
+            font-style: italic;
+            color: #1e293b;
+            font-weight: 600;
+            line-height: 1.4;
+        }
+        @media only screen and (max-width: 600px) {
+            .container {
+                margin: 0;
+                border-radius: 0;
+            }
+            .content {
+                padding: 40px 20px;
+            }
+            .greeting {
+                font-size: 28px;
+            }
+        }
+    </style>
 </head>
-<body style="margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f8fafc;">
-    <table width="100%" border="0" cellspacing="0" cellpadding="0" style="background-color: #f8fafc; padding: 40px 0;">
-        <tr>
-            <td align="center">
-                <table width="600" border="0" cellspacing="0" cellpadding="0" style="background-color: #ffffff; border-radius: 16px; overflow: hidden; shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);">
-                    <!-- Blue Header Banner -->
-                    <tr>
-                        <td style="background-color: #1a6cf4; padding: 40px 0; text-align: center;">
-                            <img src="${frontendUrl}/img/logo.png" alt="Become A Skiller" style="width: 180px; height: auto;">
-                        </td>
-                    </tr>
+<body>
+    <div class="container">
+        <!-- Premium Header -->
+        <div class="header">
+            <img src="${logoUrl}" alt="Become A Skiller" class="logo">
+        </div>
 
-                    <!-- Body Content -->
-                    <tr>
-                        <td style="padding: 48px; background-color: #ffffff;">
-                            <h1 style="font-size: 24px; font-weight: 800; color: #1e293b; margin: 0 0 16px;">Dear ${firstName},</h1>
-                            
-                            <p style="font-size: 16px; line-height: 1.6; color: #475569; margin: 0 0 24px;">
-                                Welcome to the <strong>Become A Skiller Community!</strong> We're thrilled to have you join our platform dedicated to bridging the gap between learning and professional success.
-                            </p>
+        <!-- Main Content -->
+        <div class="content">
+            <h1 class="greeting">Hey ${firstName},</h1>
+            
+            <p class="text">
+                Welcome to the <strong>Become A Skiller Community!</strong> We're beyond excited to have you join our platform—the ultimate bridge between learning and professional excellence.
+            </p>
 
-                            <p style="font-size: 16px; line-height: 1.6; color: #475569; margin: 0 0 32px;">
-                                Your journey to mastery begins here. Explore our industry-aligned courses, connect with top-tier trainers, and unlock your potential.
-                            </p>
+            <div class="feature-card">
+                <span class="feature-title">🚀 Mastery Awaits</span>
+                <span class="feature-desc">Dive into expert-crafted, industry-aligned courses that transform your potential into expertise.</span>
+            </div>
 
-                            <!-- What's Next Section -->
-                            <h3 style="font-size: 18px; font-weight: 700; color: #1e293b; margin: 0 0 20px; text-transform: uppercase; letter-spacing: 0.05em;">What’s Next?</h3>
-                            
-                            <table width="100%" border="0" cellspacing="0" cellpadding="0">
-                                <tr>
-                                    <td style="padding-bottom: 20px;">
-                                        <div style="background-color: #f1f5f9; padding: 20px; border-radius: 12px; border-left: 4px solid #1a6cf4;">
-                                            <strong style="display: block; font-size: 15px; color: #1e293b; margin-bottom: 4px;">Explore Courses</strong>
-                                            <span style="font-size: 14px; color: #64748b;">Browse through our curated list of technical and soft-skill courses designed by experts.</span>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td style="padding-bottom: 20px;">
-                                        <div style="background-color: #f1f5f9; padding: 20px; border-radius: 12px; border-left: 4px solid #1a6cf4;">
-                                            <strong style="display: block; font-size: 15px; color: #1e293b; margin-bottom: 4px;">Apply for Jobs</strong>
-                                            <span style="font-size: 14px; color: #64748b;">Visit our job board to find opportunities that match your skill set and aspirations.</span>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td style="padding-bottom: 32px;">
-                                        <div style="background-color: #f1f5f9; padding: 20px; border-radius: 12px; border-left: 4px solid #1a6cf4;">
-                                            <strong style="display: block; font-size: 15px; color: #1e293b; margin-bottom: 4px;">Track Progress</strong>
-                                            <span style="font-size: 14px; color: #64748b;">Use your personalized dashboard to keep tabs on your enrollments and certifications.</span>
-                                        </div>
-                                    </td>
-                                </tr>
-                            </table>
+            <div class="feature-card">
+                <span class="feature-title">💼 Career Accelerator</span>
+                <span class="feature-desc">Connect with top trainers and explore exclusive job opportunities tailored to your new skills.</span>
+            </div>
 
-                            <!-- CTA -->
-                            <div style="text-align: center;">
-                                <a href="${frontendUrl}/dashboard" style="display: inline-block; background-color: #1a6cf4; color: #ffffff; padding: 16px 32px; border-radius: 8px; text-decoration: none; font-weight: 700; font-size: 16px;">Go to Dashboard Hub</a>
-                            </div>
+            <div class="feature-card">
+                <span class="feature-title">📊 Real-time Progress</span>
+                <span class="feature-desc">Track every milestone on your personalized dashboard and earn certifications that matter.</span>
+            </div>
 
-                            <!-- Motivational Closing -->
-                            <div style="margin-top: 48px; padding-top: 32px; border-top: 1px solid #e2e8f0; text-align: center;">
-                                <p style="font-size: 18px; font-style: italic; color: #1e293b; font-weight: 600;">
-                                    "Your future is created by what you do today, not tomorrow."
-                                </p>
-                            </div>
-                        </td>
-                    </tr>
+            <!-- Stylish CTA -->
+            <div style="text-align: center; margin-top: 40px;">
+                <a href="${frontendUrl}/dashboard" class="cta-button">Launch Your Dashboard</a>
+            </div>
 
-                    <!-- Footer -->
-                    <tr>
-                        <td style="padding: 32px 48px; background-color: #f8fafc; text-align: center; border-top: 1px solid #e2e8f0;">
-                            <p style="font-size: 14px; color: #64748b; margin: 0 0 12px;">
-                                Believe, Begin, Become – with Become A Skiller.
-                            </p>
-                            <div style="font-size: 12px; color: #94a3b8;">
-                                &copy; 2024 Become A Skiller. All rights reserved.<br>
-                                Tirunelveli, Tamil Nadu, India
-                            </div>
-                        </td>
-                    </tr>
-                </table>
-            </td>
-        </tr>
-    </table>
+            <!-- Motivational Section -->
+            <div class="quote-box">
+                <p class="quote">
+                    "The best way to predict the future is to create it."
+                </p>
+                <p style="font-size: 14px; color: #64748b; margin-top: 10px;">— Set your goals, we'll help you reach them.</p>
+            </div>
+        </div>
+
+        <!-- Professional Footer -->
+        <div class="footer">
+            <p style="color: #ffffff; font-weight: 600; margin-bottom: 20px;">Believe. Begin. Become.</p>
+            <div style="font-size: 13px; line-height: 1.8;">
+                &copy; 2024 Become A Skiller. Built with ❤️ for future masters.<br>
+                Tirunelveli, Tamil Nadu, India
+            </div>
+            <div style="margin-top: 25px;">
+                <a href="#" style="color: #94a3b8; text-decoration: underline; margin: 0 10px;">Privacy Policy</a>
+                <a href="#" style="color: #94a3b8; text-decoration: underline; margin: 0 10px;">Unsubscribe</a>
+            </div>
+        </div>
+    </div>
 </body>
 </html>
 `;
