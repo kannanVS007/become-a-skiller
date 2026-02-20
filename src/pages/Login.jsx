@@ -58,7 +58,12 @@ const Login = () => {
 
             if (data.success) {
                 login(data.user, data.token, data.refreshToken);
-                navigate('/dashboard');
+                // Redirect to complete profile if mobile is missing
+                if (!data.user.mobile) {
+                    navigate('/complete-profile');
+                } else {
+                    navigate('/dashboard');
+                }
             }
         } catch (err) {
             setErrors({ submit: err.response?.data?.message || 'Login failed. Please check your credentials.' });

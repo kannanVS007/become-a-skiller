@@ -115,6 +115,7 @@ const UserManagement = () => {
                                 <tr className="bg-gray-50/50 dark:bg-gray-800/50 text-[10px] font-black text-gray-500 uppercase tracking-[0.2em]">
                                     <th className="px-8 py-5">User Profile</th>
                                     <th className="px-8 py-5">Role</th>
+                                    <th className="px-8 py-5">Contact</th>
                                     <th className="px-8 py-5">Status</th>
                                     <th className="px-8 py-5">Join Date</th>
                                     <th className="px-8 py-5 text-right">Actions</th>
@@ -155,6 +156,11 @@ const UserManagement = () => {
                                                 }`}>
                                                 {user.role}
                                             </span>
+                                        </td>
+                                        <td className="px-8 py-5">
+                                            <p className="text-xs font-bold text-gray-900 dark:text-white uppercase tracking-wider">
+                                                {user.mobile || '—'}
+                                            </p>
                                         </td>
                                         <td className="px-8 py-5">
                                             <div className="flex items-center gap-2">

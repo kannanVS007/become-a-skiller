@@ -1,6 +1,8 @@
 import User from '../models/User.js';
 import jwt from 'jsonwebtoken';
 import crypto from 'crypto';
+import sendEmail from '../services/emailService.js';
+import { getWelcomeEmailHtml } from '../services/welcomeEmailTemplate.js';
 
 // Generate Token
 const generateToken = (id) => {
@@ -16,17 +18,37 @@ const generateRefreshToken = (id) => {
     });
 };
 
+// Send welcome email (fire-and-forget — does not block signup)
+const sendWelcomeEmail = (user) => {
+    sendEmail({
+        email: user.email,
+        subject: 'Welcome to the Become A Skiller Community!',
+        html: getWelcomeEmailHtml(user.name),
+        message: `Welcome to Become A Skiller, ${user.name}! Your account is now active.`
+    })
+        .then(() => console.log(`[Email] Welcome email sent to ${user.email}`))
+        .catch((err) => console.error(`[Email] Failed to send welcome email to ${user.email}:`, err.message));
+};
+
 // @desc    Register user
 // @route   POST /api/v1/auth/register
 // @access  Public
 export const register = async (req, res, next) => {
     try {
-        const { name, email, password, role } = req.body;
+        const { name, email, password, role, mobile } = req.body;
+
+        // Validate mobile — mandatory for new registrations
+        if (!mobile) {
+            return res.status(400).json({ success: false, message: 'Mobile number is required.' });
+        }
+        if (!/^[0-9]{10}$/.test(mobile.toString().trim())) {
+            return res.status(400).json({ success: false, message: 'Please provide a valid 10-digit mobile number.' });
+        }
 
         // Check if user exists
         const userExists = await User.findOne({ email });
         if (userExists) {
-            return res.status(400).json({ message: 'User already exists' });
+            return res.status(400).json({ success: false, message: 'User already exists' });
         }
 
         // Create user
@@ -34,8 +56,12 @@ export const register = async (req, res, next) => {
             name,
             email,
             password,
-            role: role || 'student'
+            role: role || 'student',
+            mobile: mobile.toString().trim()
         });
+
+        // Fire welcome email asynchronously — does NOT block response
+        sendWelcomeEmail(user);
 
         sendTokenResponse(user, 201, res);
     } catch (err) {
@@ -66,6 +92,10 @@ export const login = async (req, res, next) => {
         if (!isMatch) {
             return res.status(401).json({ message: 'Invalid credentials' });
         }
+
+        // Update lastLogin
+        user.lastLogin = new Date();
+        await user.save({ validateBeforeSave: false });
 
         sendTokenResponse(user, 200, res);
     } catch (err) {
@@ -117,7 +147,8 @@ const sendTokenResponse = (user, statusCode, res) => {
             id: user._id,
             name: user.name,
             email: user.email,
-            role: user.role
+            role: user.role,
+            mobile: user.mobile || null   // always include so frontend can detect missing phone
         }
     });
 };

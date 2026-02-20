@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FiMail, FiLock, FiUser, FiArrowRight, FiCheck } from 'react-icons/fi';
+import { FiMail, FiLock, FiUser, FiPhone, FiArrowRight, FiCheck } from 'react-icons/fi';
 import { FcGoogle } from 'react-icons/fc';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
@@ -16,6 +16,7 @@ const SignUp = () => {
     const [formData, setFormData] = useState({
         name: '',
         email: '',
+        mobile: '',
         password: '',
         confirmPassword: '',
         role: '',
@@ -27,7 +28,6 @@ const SignUp = () => {
     const roleOptions = [
         { value: 'student', label: '🎓 Student - Learn new skills' },
         { value: 'trainer', label: '👨‍🏫 Trainer - Teach and earn' },
-        { value: 'admin', label: '🏢 Admin - Platform Management' },
     ];
 
     const handleChange = (field, value) => {
@@ -39,11 +39,16 @@ const SignUp = () => {
 
     const validateStep1 = () => {
         const newErrors = {};
-        if (!formData.name) newErrors.name = 'Name is required';
+        if (!formData.name.trim()) newErrors.name = 'Name is required';
         if (!formData.email) {
             newErrors.email = 'Email is required';
         } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
             newErrors.email = 'Email is invalid';
+        }
+        if (!formData.mobile) {
+            newErrors.mobile = 'Mobile number is required';
+        } else if (!/^[0-9]{10}$/.test(formData.mobile.trim())) {
+            newErrors.mobile = 'Enter a valid 10-digit mobile number';
         }
         return newErrors;
     };
@@ -86,7 +91,8 @@ const SignUp = () => {
                 name: formData.name,
                 email: formData.email,
                 password: formData.password,
-                role: formData.role
+                role: formData.role,
+                mobile: formData.mobile
             });
 
             if (data.success) {
@@ -136,9 +142,10 @@ const SignUp = () => {
                         </div>
                     )}
 
+                    {/* Step indicator */}
                     <div className="flex items-center justify-center gap-3 mb-12">
                         {[1, 2].map((i) => (
-                            <div key={i} className={`h-2.5 rounded-full transition-all duration-500 ${step === i ? 'bg-blue-600 w-16' : 'bg-gray-200 dark:bg-gray-800 w-2.5'}`} />
+                            <div key={i} className={`h-2.5 rounded-full transition-all duration-500 ${step === i ? 'bg-blue-600 w-16' : step > i ? 'bg-green-500 w-8' : 'bg-gray-200 dark:bg-gray-800 w-2.5'}`} />
                         ))}
                     </div>
 
@@ -167,6 +174,16 @@ const SignUp = () => {
                                     value={formData.email}
                                     onChange={(e) => handleChange('email', e.target.value)}
                                     error={errors.email}
+                                    required
+                                />
+                                <Input
+                                    label="Mobile Number"
+                                    type="tel"
+                                    icon={FiPhone}
+                                    value={formData.mobile}
+                                    onChange={(e) => handleChange('mobile', e.target.value.replace(/[^0-9]/g, '').slice(0, 10))}
+                                    error={errors.mobile}
+                                    placeholder="10-digit mobile number"
                                     required
                                 />
                                 <Button
@@ -224,11 +241,11 @@ const SignUp = () => {
                                             onChange={(e) => handleChange('acceptTerms', e.target.checked)}
                                             className="peer sr-only"
                                         />
-                                        <div className="w-6 h-6 rounded-lg border-2 border-blue-300 peer-checked:bg-blue-600 transition-all flex items-center justify-center">
+                                        <div className="w-6 h-6 rounded-lg border-2 border-blue-300 peer-checked:bg-blue-600 transition-all flex items-center justify-center flex-shrink-0">
                                             <FiCheck className="text-white opacity-0 peer-checked:opacity-100" />
                                         </div>
                                         <span className="text-sm text-gray-600 dark:text-gray-400 font-medium">
-                                            I agree to the <span className="text-blue-600 underline">Terms</span> and <span className="text-blue-600 underline">Privacy</span>
+                                            I agree to the <span className="text-blue-600 underline">Terms</span> and <span className="text-blue-600 underline">Privacy Policy</span>
                                         </span>
                                     </label>
                                     {errors.acceptTerms && <p className="mt-2 text-xs text-red-500 font-bold">{errors.acceptTerms}</p>}
@@ -236,7 +253,7 @@ const SignUp = () => {
                                 <div className="flex gap-4">
                                     <Button type="button" onClick={() => setStep(1)} variant="secondary" className="flex-1 !rounded-2xl h-14 font-black">Back</Button>
                                     <Button type="submit" variant="primary" className="flex-2 !rounded-2xl h-14 font-black shadow-glow" disabled={isLoading}>
-                                        {isLoading ? "Starting..." : "Start Journey"}
+                                        {isLoading ? 'Creating...' : 'Start Journey'}
                                     </Button>
                                 </div>
                             </motion.form>

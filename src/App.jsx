@@ -34,6 +34,7 @@ import CheckoutPage from './pages/CheckoutPage';
 import SuccessPage from './pages/SuccessPage';
 import CreateCourse from './pages/trainer/CreateCourse';
 import CreateJob from './pages/trainer/CreateJob';
+import CompleteProfile from './pages/CompleteProfile';
 
 import Home from './pages/Home';
 import PageLoader from './components/ui/PageLoader';
@@ -127,6 +128,14 @@ function App() {
                                 <Route path="/cart" element={<RouteTransition><CartPage /></RouteTransition>} />
                                 <Route path="/checkout" element={<RouteTransition><CheckoutPage /></RouteTransition>} />
                                 <Route path="/success" element={<SuccessPage />} />
+                                <Route
+                                    path="/complete-profile"
+                                    element={
+                                        <ProtectedRoute>
+                                            <RouteTransition><CompleteProfile /></RouteTransition>
+                                        </ProtectedRoute>
+                                    }
+                                />
 
                                 {/* Protected Routes */}
                                 <Route

@@ -11,10 +11,11 @@ const sendEmail = async (options) => {
     });
 
     const message = {
-        from: `${process.env.FROM_NAME || 'Become Skiller'} <${process.env.FROM_EMAIL || 'no-reply@becomeskiller.com'}>`,
+        from: `${process.env.FROM_NAME || 'Become A Skiller'} <${process.env.FROM_EMAIL || 'no-reply@becomeskiller.com'}>`,
         to: options.email,
         subject: options.subject,
-        text: options.message,
+        text: options.message || '',
+        html: options.html || undefined,
         attachments: options.attachments || []
     };
 
