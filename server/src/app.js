@@ -11,10 +11,16 @@ const app = express();
 
 // Middleware
 app.use(helmet()); // Security headers
+// Remove any trailing slash from FRONTEND_URL so CORS origin matches exactly
+const allowedOrigin = (process.env.FRONTEND_URL || 'http://localhost:5173').replace(/\/$/, '');
+
 app.use(cors({
-    origin: process.env.FRONTEND_URL || 'http://localhost:5173',
-    credentials: true
+    origin: allowedOrigin,
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization']
 }));
+app.options('*', cors()); // Enable pre-flight across all routes
 app.use(express.json({ limit: '50mb' })); // Body parser
 app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 app.use(morgan('dev')); // Logging
