@@ -18,9 +18,10 @@ app.use(cors({
     origin: allowedOrigin,
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization']
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    preflightContinue: false,
+    optionsSuccessStatus: 204
 }));
-app.options('*', cors()); // Enable pre-flight across all routes
 app.use(express.json({ limit: '50mb' })); // Body parser
 app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 app.use(morgan('dev')); // Logging
