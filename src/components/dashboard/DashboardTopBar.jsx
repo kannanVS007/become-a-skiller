@@ -70,7 +70,7 @@ const DashboardTopBar = ({ collapsed, setCollapsed, setMobileOpen, isMobile }) =
                     </div>
                     <div className="relative">
                         <img
-                            src={user?.avatar || 'https://ui-avatars.com/api/?name=User&background=00A8E8&color=fff'}
+                            src={user?.avatar || '/img/default-avatar.svg'}
                             alt="User"
                             className="w-11 h-11 rounded-2xl border-2 border-primary-500/20 group-hover:border-primary-500 transition-all object-cover shadow-soft"
                         />

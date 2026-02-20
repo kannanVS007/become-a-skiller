@@ -150,7 +150,7 @@ const Navbar = () => {
                                 >
                                     <div className="relative">
                                         <img
-                                            src={user?.avatar || `https://ui-avatars.com/api/?name=${user?.name || 'User'}&background=00A8E8&color=fff`}
+                                            src={user?.avatar || '/img/default-avatar.svg'}
                                             alt={user?.name}
                                             className="w-8 h-8 lg:w-9 lg:h-9 rounded-full border-2 border-primary-500"
                                         />
@@ -227,7 +227,7 @@ const Navbar = () => {
                                     <div className="space-y-3">
                                         <div className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-800 rounded-xl">
                                             <img
-                                                src={user?.avatar || `https://ui-avatars.com/api/?name=${user?.name || 'User'}&background=00A8E8&color=fff`}
+                                                src={user?.avatar || '/img/default-avatar.svg'}
                                                 alt={user?.name}
                                                 className="w-10 h-10 rounded-full border-2 border-primary-500"
                                             />

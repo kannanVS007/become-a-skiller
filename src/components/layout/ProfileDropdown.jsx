@@ -47,7 +47,7 @@ const ProfileDropdown = ({ isOpen, onClose }) => {
                         <div className="p-4 border-b border-gray-200 dark:border-gray-700">
                             <div className="flex items-center gap-3">
                                 <img
-                                    src={user?.avatar || 'https://ui-avatars.com/api/?name=User&background=00A8E8&color=fff'}
+                                    src={user?.avatar || '/img/default-avatar.svg'}
                                     alt={user?.name}
                                     className="w-12 h-12 rounded-full"
                                 />

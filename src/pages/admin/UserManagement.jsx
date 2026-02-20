@@ -138,7 +138,7 @@ const UserManagement = () => {
                                             <div className="flex items-center gap-4">
                                                 <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary-500 to-purple-600 p-[2px]">
                                                     <img
-                                                        src={user.avatar || `https://ui-avatars.com/api/?name=${user.name}&background=random`}
+                                                        src={user.avatar || '/img/default-avatar.svg'}
                                                         alt={user.name}
                                                         className="w-full h-full rounded-[10px] object-cover bg-white dark:bg-gray-900"
                                                     />
