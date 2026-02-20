@@ -41,7 +41,7 @@ const seedUsers = async () => {
             email: 'admin@becomeskiller.com',
             password: adminHashedPassword, // Updated password
             role: 'admin',
-            mobile: '9876543210',
+            mobile: '6379524135',
             isEmailVerified: true,
             isBlocked: false,
             profileCompletion: 100,
