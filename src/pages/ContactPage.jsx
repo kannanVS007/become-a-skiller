@@ -1,19 +1,35 @@
 import React, { useState } from 'react';
-import { motion } from 'framer-motion';
-import { FiMail, FiPhone, FiMapPin, FiMessageSquare, FiSend, FiClock, FiCheck } from 'react-icons/fi';
+import { motion, AnimatePresence } from 'framer-motion';
+import { FiMail, FiPhone, FiMapPin, FiMessageSquare, FiSend, FiClock, FiCheck, FiX } from 'react-icons/fi';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import Card from '../components/ui/Card';
 import Button from '../components/ui/Button';
 import Input from '../components/ui/Input';
+import api from '../services/api';
 
 const ContactPage = () => {
-    const [isSubmitted, setIsSubmitted] = useState(false);
+    const [formData, setFormData] = useState({ firstName: '', lastName: '', email: '', subject: 'General Inquiry', message: '' });
+    const [status, setStatus] = useState('idle'); // idle | loading | success | error
+    const [showModal, setShowModal] = useState(false);
+    const [errorMsg, setErrorMsg] = useState('');
 
-    const handleSubmit = (e) => {
+    const handleChange = (e) => setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }));
+
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        setIsSubmitted(true);
-        setTimeout(() => setIsSubmitted(false), 5000);
+        setStatus('loading');
+        setErrorMsg('');
+        try {
+            await api.post('/enquiries', formData);
+            setStatus('success');
+            setShowModal(true);
+            setFormData({ firstName: '', lastName: '', email: '', subject: 'General Inquiry', message: '' });
+            setTimeout(() => { setShowModal(false); setStatus('idle'); }, 4500);
+        } catch (err) {
+            setStatus('error');
+            setErrorMsg(err?.response?.data?.message || 'Something went wrong. Please try again.');
+        }
     };
 
     const contactInfo = [
@@ -34,8 +50,8 @@ const ContactPage = () => {
         {
             icon: FiMapPin,
             label: 'Visit Us',
-            value: '123 Tech Avenue, Silicon Valley',
-            description: 'Come say hello at our headquarters.',
+            value: 'Tirunelveli, Palayamkottai, Tamil Nadu, India',
+            description: 'Come say hello at our office.',
             color: 'text-purple-500'
         }
     ];
@@ -43,6 +59,48 @@ const ContactPage = () => {
     return (
         <div className="min-h-screen bg-white dark:bg-gray-950">
             <Navbar />
+
+            {/* Success Modal */}
+            <AnimatePresence>
+                {showModal && (
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm px-4"
+                    >
+                        <motion.div
+                            initial={{ scale: 0.8, opacity: 0, y: 30 }}
+                            animate={{ scale: 1, opacity: 1, y: 0 }}
+                            exit={{ scale: 0.8, opacity: 0, y: 30 }}
+                            transition={{ type: 'spring', stiffness: 350, damping: 28 }}
+                            className="bg-white dark:bg-gray-900 rounded-3xl p-8 max-w-sm w-full text-center shadow-2xl relative"
+                        >
+                            <button onClick={() => { setShowModal(false); setStatus('idle'); }} className="absolute top-4 right-4 text-gray-400 hover:text-gray-700 dark:hover:text-white">
+                                <FiX size={20} />
+                            </button>
+                            <motion.div
+                                initial={{ scale: 0 }}
+                                animate={{ scale: 1 }}
+                                transition={{ delay: 0.15, type: 'spring', stiffness: 400, damping: 20 }}
+                                className="w-20 h-20 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center mx-auto mb-5"
+                            >
+                                <FiCheck className="w-10 h-10 text-green-500" />
+                            </motion.div>
+                            <h3 className="text-2xl font-black text-gray-900 dark:text-white mb-2">Message Sent!</h3>
+                            <p className="text-gray-500 dark:text-gray-400 text-sm">We've received your enquiry and will get back to you within 2 hours.</p>
+                            <div className="mt-6 h-1 bg-gray-100 dark:bg-gray-800 rounded-full overflow-hidden">
+                                <motion.div
+                                    initial={{ width: '100%' }}
+                                    animate={{ width: '0%' }}
+                                    transition={{ duration: 4.5, ease: 'linear' }}
+                                    className="h-full bg-gradient-to-r from-green-400 to-emerald-500 rounded-full"
+                                />
+                            </div>
+                        </motion.div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
 
             {/* Hero Section */}
             <section className="relative pt-40 pb-20 px-4 overflow-hidden">
@@ -136,29 +194,41 @@ const ContactPage = () => {
                                 </h3>
 
                                 <form onSubmit={handleSubmit} className="space-y-6 relative z-10">
-                                    <div className="grid md:grid-cols-2 gap-6">
+                                    <div className="grid sm:grid-cols-2 gap-6">
                                         <Input
                                             label="First Name"
-                                            placeholder="Jane"
+                                            name="firstName"
+                                            placeholder="Kannan"
+                                            value={formData.firstName}
+                                            onChange={handleChange}
                                             required
                                         />
                                         <Input
                                             label="Last Name"
-                                            placeholder="Doe"
+                                            name="lastName"
+                                            placeholder="VS"
+                                            value={formData.lastName}
+                                            onChange={handleChange}
                                             required
                                         />
                                     </div>
                                     <Input
                                         label="Email Address"
                                         type="email"
-                                        placeholder="jane@example.com"
+                                        name="email"
+                                        placeholder="you@example.com"
+                                        value={formData.email}
+                                        onChange={handleChange}
                                         required
                                     />
                                     <div className="space-y-2">
-                                        <label className="text-sm font-semibold text-gray-700 dark:text-gray-300 ml-1">
-                                            Subject
-                                        </label>
-                                        <select className="w-full bg-gray-50 dark:bg-gray-900 border border-gray-100 dark:border-white/10 rounded-2xl px-4 py-4 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-primary-500 transition-all appearance-none">
+                                        <label className="text-sm font-semibold text-gray-700 dark:text-gray-300 ml-1">Subject</label>
+                                        <select
+                                            name="subject"
+                                            value={formData.subject}
+                                            onChange={handleChange}
+                                            className="w-full bg-gray-50 dark:bg-gray-900 border border-gray-100 dark:border-white/10 rounded-2xl px-4 py-4 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-primary-500 transition-all appearance-none"
+                                        >
                                             <option>General Inquiry</option>
                                             <option>Course Support</option>
                                             <option>Corporate Training</option>
@@ -166,26 +236,32 @@ const ContactPage = () => {
                                         </select>
                                     </div>
                                     <div className="space-y-2">
-                                        <label className="text-sm font-semibold text-gray-700 dark:text-gray-300 ml-1">
-                                            Message
-                                        </label>
+                                        <label className="text-sm font-semibold text-gray-700 dark:text-gray-300 ml-1">Message</label>
                                         <textarea
+                                            name="message"
+                                            value={formData.message}
+                                            onChange={handleChange}
                                             className="w-full bg-gray-50 dark:bg-gray-900 border border-gray-100 dark:border-white/10 rounded-2xl px-4 py-4 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-primary-500 transition-all min-h-[150px] resize-none"
                                             placeholder="Tell us how we can help..."
                                             required
-                                        ></textarea>
+                                        />
                                     </div>
+
+                                    {status === 'error' && (
+                                        <p className="text-sm text-red-500 bg-red-50 dark:bg-red-900/20 rounded-xl px-4 py-3">{errorMsg}</p>
+                                    )}
 
                                     <Button
                                         type="submit"
                                         variant="primary"
                                         size="lg"
                                         className="w-full !rounded-2xl shadow-glow py-4"
-                                        disabled={isSubmitted}
+                                        disabled={status === 'loading'}
                                     >
-                                        {isSubmitted ? (
+                                        {status === 'loading' ? (
                                             <span className="flex items-center justify-center gap-2">
-                                                <FiCheck /> Sent Successfully
+                                                <svg className="animate-spin h-5 w-5" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" /><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" /></svg>
+                                                Sending...
                                             </span>
                                         ) : (
                                             <span className="flex items-center justify-center gap-2">
@@ -204,18 +280,18 @@ const ContactPage = () => {
                 </div>
             </section>
 
-            {/* Map Section or Bottom CTA */}
+            {/* Map / Location */}
             <section className="py-20 px-4">
                 <div className="max-w-7xl mx-auto">
-                    <div className="h-[400px] rounded-[40px] bg-gray-200 dark:bg-gray-800 relative overflow-hidden shadow-enterprise group">
+                    <div className="h-[320px] rounded-[40px] bg-gray-200 dark:bg-gray-800 relative overflow-hidden shadow-enterprise group">
                         <div className="absolute inset-0 bg-gradient-mesh opacity-40"></div>
                         <div className="absolute inset-0 flex items-center justify-center">
                             <div className="text-center group-hover:scale-105 transition-transform duration-500">
                                 <div className="w-20 h-20 bg-white/20 backdrop-blur-xl rounded-full flex items-center justify-center mx-auto mb-6 shadow-premium">
                                     <FiMapPin className="w-10 h-10 text-primary-500" />
                                 </div>
-                                <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">Global Headquarters</h3>
-                                <p className="text-gray-600 dark:text-gray-400">Silicon Valley, CA • Opening Q3 2024</p>
+                                <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">Our Office</h3>
+                                <p className="text-gray-600 dark:text-gray-400">Palayamkottai, Tirunelveli, Tamil Nadu, India</p>
                             </div>
                         </div>
                     </div>

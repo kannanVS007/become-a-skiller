@@ -90,18 +90,18 @@ const Navbar = () => {
 
                     {/* Right Actions */}
                     <div className="flex items-center gap-4">
-                        {/* Search Icon */}
+                        {/* Search Icon - hidden on mobile */}
                         <button
-                            className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors hidden sm:block"
+                            className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors hidden md:block"
                             aria-label="Search"
                         >
                             <FiSearch className="w-5 h-5 text-gray-600 dark:text-gray-400" />
                         </button>
 
-                        {/* Cart Icon */}
+                        {/* Cart Icon — always visible */}
                         <Link
                             to="/cart"
-                            className="relative p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors hidden sm:block"
+                            className="relative p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
                             aria-label="Shopping Cart"
                         >
                             <FiShoppingCart className="w-5 h-5 text-gray-600 dark:text-gray-400" />
